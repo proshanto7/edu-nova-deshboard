@@ -7,7 +7,7 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 
 const ADMIN_LINKS = [
   { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/categories", label: "Categories" },
+  { href: "/categories", label: "Categories" },
   { href: "/dashboard/courses", label: "Courses" },
   { href: "/dashboard/students", label: "Students" },
   { href: "/dashboard/activity-log", label: "Activity Log" },

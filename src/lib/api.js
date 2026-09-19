@@ -53,27 +53,27 @@ export const updateUserRole = (id, data) => apiRequest(`/auth/${id}/role`, "PATC
 // ======================================================
 
 export const getCategories = (params = {}) => {
-  return apiRequest(`/category${toQueryString(params)}`);
+  return apiRequest(`/categories${toQueryString(params)}`);
 };
 
 export const getCategory = (id) => {
-  return apiRequest(`/category/${id}`);
+  return apiRequest(`/categories/${id}`);
 };
 
 export const getCategoryBySlug = (slug) => {
-  return apiRequest(`/category/slug/${slug}`);
+  return apiRequest(`/categories/slug/${slug}`);
 };
 
 export const createCategory = (data) => {
-  return apiRequest("/category", "POST", data);
+  return apiRequest("/categories", "POST", data);
 };
 
 export const updateCategory = (id, data) => {
-  return apiRequest(`/category/${id}`, "PATCH", data);
+  return apiRequest(`/categories/${id}`, "PATCH", data);
 };
 
 export const deleteCategory = (id) => {
-  return apiRequest(`/category/${id}`, "DELETE");
+  return apiRequest(`/categories/${id}`, "DELETE");
 };
 
 // ======================================================
