@@ -35,10 +35,10 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 shrink-0 h-screen sticky top-0 border-r border-[var(--border)] bg-[var(--sidebar-bg)] p-4 flex flex-col justify-between transition-colors">
+    <aside className="w-64 shrink-0 h-screen sticky top-0 border-r border-(--border) bg-(--sidebar-bg) p-4 flex flex-col justify-between transition-colors">
       <div>
         <div className="flex items-center justify-between mb-6 px-2">
-          <span className="text-lg font-bold text-[var(--text-primary)]">Edu-Nova</span>
+          <span className="text-lg font-bold text-(--text-primary)">Edu-Nova</span>
           <ThemeToggle />
         </div>
 
@@ -51,8 +51,8 @@ export default function Sidebar() {
                 href={link.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)]"
-                    : "text-[var(--text-secondary)] hover:bg-[var(--border-light)]"
+                    ? "bg-(--sidebar-active-bg) text-(--sidebar-active-text)"
+                    : "text-(--text-secondary) hover:bg-(--border-light)"
                 }`}
               >
                 {link.label}
@@ -64,7 +64,7 @@ export default function Sidebar() {
 
       <button
         onClick={handleLogout}
-        className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--danger)] hover:bg-[var(--danger-bg)] transition-colors text-left"
+        className="px-4 py-2 rounded-lg text-sm font-medium text-(--danger) hover:bg-(--danger-bg) transition-colors text-left"
       >
         Logout
       </button>
