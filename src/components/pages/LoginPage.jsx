@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { loginUser } from "@/lib/api";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,7 +33,9 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6">
-      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">Login</h1>
+      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">
+        Login
+      </h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
@@ -49,7 +52,9 @@ export default function LoginPage() {
             className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
           />
           {errors.email && (
-            <p className="text-[var(--danger)] text-xs mt-1">{errors.email.message}</p>
+            <p className="text-[var(--danger)] text-xs mt-1">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -59,16 +64,23 @@ export default function LoginPage() {
             placeholder="Password"
             {...register("password", {
               required: "Password is required",
-              minLength: { value: 8, message: "Password must be at least 8 characters" },
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters",
+              },
             })}
             className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
           />
           {errors.password && (
-            <p className="text-[var(--danger)] text-xs mt-1">{errors.password.message}</p>
+            <p className="text-[var(--danger)] text-xs mt-1">
+              {errors.password.message}
+            </p>
           )}
         </div>
 
-        {serverError && <p className="text-[var(--danger)] text-sm">{serverError}</p>}
+        {serverError && (
+          <p className="text-[var(--danger)] text-sm">{serverError}</p>
+        )}
 
         <button
           type="submit"
@@ -77,6 +89,12 @@ export default function LoginPage() {
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </button>
+        <Link
+          href="/forgot-password"
+          className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
+        >
+          Forgot Password?
+        </Link>
       </form>
     </div>
   );
