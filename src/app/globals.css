@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* ========================================
+     LIGHT MODE (default — screenshot match)
+  ======================================== */
+
+  --background: #fdfbf7;
+  --foreground: #1c1c1e;
+
+  --primary: #1c1c1e;
+  --primary-hover: #000000;
+
+  --secondary: #6b6b6b;
+  --secondary-light: #dad4ca;
+  --secondary-dark: #3d3d3d;
+
+  --accent: #7d7f4c;
+  --accent-hover: #676a3d;
+  --accent-text: #ffffff;
+
+  --background-card: #ffffff;
+  --background-input: #ffffff;
+  --background-map: #f0ede5;
+
+  --text-primary: var(--primary);
+  --text-secondary: var(--secondary);
+  --text-muted: #9a9890;
+  --text-light: #4a4a4a;
+  --text-placeholder: #a3a099;
+
+  --border: rgba(0, 0, 0, 0.1);
+  --border-light: rgba(0, 0, 0, 0.06);
+
+  --success: #5a7a4a;
+  --footer-bg: #f0ebe1;
+
+  --danger: #b0413e;
+  --danger-bg: #f7e8e7;
+  --warning: #a67c2e;
+  --warning-bg: #f5eddb;
+  --sidebar-bg: var(--background-card);
+  --sidebar-active-bg: var(--accent);
+  --sidebar-active-text: var(--accent-text);
+
+  /* Navbar */
+  --nav-bg: #fdfbf7;
+  --nav-logo-text: #1c1c1e;
+  --nav-logo-border: #1c1c1e;
+  --nav-text: #3d3d3d;
+  --nav-text-active: #1c1c1e;
+  --nav-text-hover: #1c1c1e;
+  --nav-active-border: #1c1c1e;
+  --nav-icon-border: #1c1c1e;
+  --nav-icon-text: #1c1c1e;
+  --nav-login-text: #1c1c1e;
+  --nav-divider: #b5b0a6;
+  --nav-accent: #7d7f4c;
+  --nav-accent-hover: #676a3d;
+  --nav-mobile-bg: #fdfbf7;
+  --nav-mobile-border: rgba(0, 0, 0, 0.08);
+  --nav-mobile-text: #2a2a2a;
+}
+
+.dark {
+  /* ========================================
+     DARK MODE (your original theme)
+  ======================================== */
+
+  --background: #0b0b0b;
+  --foreground: #f5f1e8;
+
+  --primary: #f5f1e8;
+  --primary-hover: #ffffff;
+
+  --secondary: #8f8b83;
+  --secondary-light: #dad4ca;
+  --secondary-dark: #242522;
+
+  --accent: #e8d8bd;
+  --accent-hover: #f5e8d2;
+  --accent-text: #1b1814;
+
+  --background-card: #242522;
+  --background-input: #10110f;
+  --background-map: #303231;
+
+  --text-primary: var(--primary);
+  --text-secondary: var(--secondary);
+  --text-muted: #85837d;
+  --text-light: #d9d3c9;
+  --text-placeholder: #77746e;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.055);
+
+  --success: #b6c9ae;
+  --footer-bg: #050505;
+
+  --danger: #e8837f;
+  --danger-bg: #2e1a19;
+  --warning: #e0b968;
+  --warning-bg: #2e2717;
+  --sidebar-bg: var(--background-card);
+  --sidebar-active-bg: var(--accent);
+  --sidebar-active-text: var(--accent-text);
+
+  /* Navbar */
+  --nav-bg: #0f0f0f;
+  --nav-logo-text: var(--primary);
+  --nav-logo-border: var(--primary);
+  --nav-text: var(--secondary);
+  --nav-text-active: var(--primary);
+  --nav-text-hover: var(--primary-hover);
+  --nav-active-border: var(--primary);
+  --nav-icon-border: rgba(255, 255, 255, 0.3);
+  --nav-icon-text: var(--primary);
+  --nav-login-text: var(--primary);
+  --nav-divider: #55534d;
+  --nav-accent: var(--accent);
+  --nav-accent-hover: var(--accent-hover);
+  --nav-mobile-bg: rgba(15, 15, 15, 0.97);
+  --nav-mobile-border: rgba(255, 255, 255, 0.08);
+  --nav-mobile-text: #d6d1c8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
