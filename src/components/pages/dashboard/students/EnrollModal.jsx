@@ -3,7 +3,10 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Modal from "@/components/common/Modal";
+import FormField from "@/components/common/FormField";
+import SelectWrap, { selectClass } from "@/components/common/SelectWrap";
 import { enrollStudent, getCourses } from "@/lib/api";
+import StudentInfoBar from "./StudentInfoBar";
 
 export default function EnrollModal({ isOpen, onClose, student, onSuccess }) {
   const [serverError, setServerError] = useState("");
@@ -48,45 +51,83 @@ export default function EnrollModal({ isOpen, onClose, student, onSuccess }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Enroll ${student?.name || ""}`}>
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4" noValidate>
-        <div>
-          <label className="text-xs text-(--text-secondary) block mb-1">Select Course</label>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Enroll ${student?.name || ""}`}
+    >
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        className="space-y-5"
+        noValidate
+      >
+        {student && <StudentInfoBar student={student} />}
 
+        <FormField
+          label="Select Course"
+          htmlFor="enroll-course"
+          error={errors.courseId?.message}
+        >
           {coursesLoading ? (
-            <p className="text-sm text-(--text-muted)">Loading courses...</p>
-          ) : (
-            <select
-              {...register("courseId", { required: "Please select a course" })}
-              className="w-full p-2.5 rounded-lg border border-(--border) bg-(--background-input) text-(--text-primary)"
+            <div
+              role="status"
+              className="h-11 animate-pulse rounded-xl bg-(--border-light)"
             >
-              <option value="">-- Select a course --</option>
-              {courses.map((course) => (
-                <option key={course._id} value={course._id}>
-                  {course.title} {course.isFree ? "(Free)" : `— ৳${course.price}`}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {errors.courseId && (
-            <p className="text-(--danger) text-xs mt-1">{errors.courseId.message}</p>
+              <span className="sr-only">Loading courses...</span>
+            </div>
+          ) : (
+            <SelectWrap>
+              <select
+                id="enroll-course"
+                {...register("courseId", {
+                  required: "Please select a course",
+                })}
+                className={selectClass(!!errors.courseId)}
+              >
+                <option value="">-- Select a course --</option>
+                {courses.map((course) => (
+                  <option key={course._id} value={course._id}>
+                    {course.title}{" "}
+                    {course.isFree ? "(Free)" : `— ৳${course.price}`}
+                  </option>
+                ))}
+              </select>
+            </SelectWrap>
           )}
 
           {!coursesLoading && courses.length === 0 && (
-            <p className="text-xs text-(--text-muted) mt-1">No courses available yet.</p>
+            <p className="mt-1.5 text-xs text-(--text-muted)">
+              No courses available yet.
+            </p>
           )}
+        </FormField>
+
+        {serverError && (
+          <p
+            role="alert"
+            className="rounded-lg bg-(--danger-bg) px-3 py-2.5 text-sm text-(--danger)"
+          >
+            {serverError}
+          </p>
+        )}
+
+        {/* Mobile e stack, sm+ e ek line e */}
+        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-(--border) px-5 py-2.5 text-sm font-medium text-(--text-primary) transition-colors hover:bg-(--border-light)"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting || coursesLoading || courses.length === 0}
+            className="rounded-xl bg-(--accent) px-5 py-2.5 text-sm font-semibold text-(--accent-text) transition-all hover:bg-(--accent-hover) active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting ? "Enrolling..." : "Enroll"}
+          </button>
         </div>
-
-        {serverError && <p className="text-(--danger) text-sm">{serverError}</p>}
-
-        <button
-          type="submit"
-          disabled={isSubmitting || coursesLoading || courses.length === 0}
-          className="w-full p-2.5 rounded-lg bg-(--accent) text-(--accent-text) font-medium hover:bg-(--accent-hover) transition-colors disabled:opacity-50"
-        >
-          {isSubmitting ? "Enrolling..." : "Enroll"}
-        </button>
       </form>
     </Modal>
   );

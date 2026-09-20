@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { useStudents } from "@/hooks/useStudents";
+import PageHeader from "@/components/common/PageHeader";
+import StudentCard from "./StudentCard";
+import StudentsSkeleton from "./StudentsSkeleton";
+import StudentsEmptyState from "./StudentsEmptyState";
 import EnrollModal from "./EnrollModal";
 import StudentEnrollmentsModal from "./StudentEnrollmentsModal";
 
@@ -21,62 +25,41 @@ export default function StudentsPage() {
     setViewModalOpen(true);
   };
 
+  const total = students?.length ?? 0;
+  const ready = !loading && !error;
+
+  let subtitle;
+  if (loading) subtitle = "Loading students...";
+  else subtitle = `${total} ${total === 1 ? "student" : "students"} in total`;
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-(--text-primary) mb-6">Students</h1>
+    <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+      <PageHeader title="Students" subtitle={subtitle} />
 
-      {loading && <p className="text-(--text-secondary)">Loading...</p>}
-      {error && <p className="text-(--danger)">{error}</p>}
+      {loading && <StudentsSkeleton />}
 
-      {!loading && !error && (
-        <div className="rounded-xl border border-(--border) bg-(--background-card) overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-(--border-light)">
-                <th className="p-3 text-(--text-secondary) font-medium">Name</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Email</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Verified</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((s) => (
-                <tr key={s._id} className="border-b border-(--border-light) last:border-0">
-                  <td className="p-3 text-(--text-primary)">{s.name}</td>
-                  <td className="p-3 text-(--text-secondary)">{s.email}</td>
-                  <td className="p-3">
-                    {s.isVerified ? (
-                      <span className="text-(--success)">Yes</span>
-                    ) : (
-                      <span className="text-(--warning)">No</span>
-                    )}
-                  </td>
-                  <td className="p-3 space-x-3">
-                    <button
-                      onClick={() => openEnroll(s)}
-                      className="text-(--accent) hover:underline text-xs"
-                    >
-                      Enroll
-                    </button>
-                    <button
-                      onClick={() => openView(s)}
-                      className="text-(--text-secondary) hover:underline text-xs"
-                    >
-                      View Enrollments
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {students.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="p-6 text-center text-(--text-muted)">
-                    No students yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {error && (
+        <div
+          role="alert"
+          className="rounded-xl border border-(--danger)/30 bg-(--danger-bg) px-4 py-3 text-sm text-(--danger)"
+        >
+          {error}
         </div>
+      )}
+
+      {ready && total === 0 && <StudentsEmptyState />}
+
+      {ready && total > 0 && (
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {students.map((s) => (
+            <StudentCard
+              key={s._id}
+              student={s}
+              onEnroll={openEnroll}
+              onViewEnrollments={openView}
+            />
+          ))}
+        </ul>
       )}
 
       <EnrollModal
