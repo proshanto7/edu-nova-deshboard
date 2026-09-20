@@ -1,13 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useCategories } from "@/hooks/useCategories";
+import SearchInput from "@/components/common/SearchInput";
+import CategoriesHeader from "./CategoriesHeader";
+import CategoryCard from "./CategoryCard";
+import CategoriesSkeleton from "./CategoriesSkeleton";
+import CategoriesEmptyState from "./CategoriesEmptyState";
 import CategoryFormModal from "./CategoryFormModal";
 
 export default function CategoriesPage() {
-  const { categories, loading, error, addCategory, editCategory, removeCategory } = useCategories();
+  const {
+    categories,
+    loading,
+    error,
+    addCategory,
+    editCategory,
+    removeCategory,
+  } = useCategories();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [search, setSearch] = useState("");
 
   const openCreate = () => {
     setEditingCategory(null);
@@ -36,68 +49,74 @@ export default function CategoriesPage() {
     }
   };
 
+  // Search: name ba description e match korle dekhabe
+  const query = search.trim().toLowerCase();
+  const isFiltering = query.length > 0;
+
+  const filteredCategories = useMemo(() => {
+    const list = categories ?? [];
+    if (!query) return list;
+    return list.filter(
+      (cat) =>
+        cat.name?.toLowerCase().includes(query) ||
+        cat.description?.toLowerCase().includes(query),
+    );
+  }, [categories, query]);
+
+  const total = categories?.length ?? 0;
+  const ready = !loading && !error;
+
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Categories</h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--accent-text)] font-medium hover:bg-[var(--accent-hover)] transition-colors"
-        >
-          + New Category
-        </button>
-      </div>
+    <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+      <CategoriesHeader
+        loading={loading}
+        total={total}
+        visible={filteredCategories.length}
+        isFiltering={isFiltering}
+        onCreate={openCreate}
+      />
 
-      {loading && <p className="text-[var(--text-secondary)]">Loading...</p>}
-      {error && <p className="text-[var(--danger)]">{error}</p>}
-
-      {!loading && !error && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-[var(--border-light)]">
-                <th className="p-3 text-[var(--text-secondary)] font-medium">Icon</th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">Name</th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">Courses</th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((cat) => (
-                <tr key={cat._id} className="border-b border-[var(--border-light)] last:border-0">
-                  <td className="p-3">
-                    {cat.icon?.url && (
-                      <img src={cat.icon.url} alt={cat.name} className="w-8 h-8 rounded object-cover" />
-                    )}
-                  </td>
-                  <td className="p-3 text-[var(--text-primary)]">{cat.name}</td>
-                  <td className="p-3 text-[var(--text-secondary)]">{cat.courseCount}</td>
-                  <td className="p-3 space-x-2">
-                    <button
-                      onClick={() => openEdit(cat)}
-                      className="text-[var(--accent)] hover:underline text-xs"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(cat._id)}
-                      className="text-[var(--danger)] hover:underline text-xs"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {categories.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="p-6 text-center text-[var(--text-muted)]">
-                    No categories yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {ready && total > 0 && (
+        <div className="mb-5 sm:max-w-sm">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search categories..."
+            label="Search categories"
+          />
         </div>
+      )}
+
+      {loading && <CategoriesSkeleton />}
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-xl border border-(--danger)/30 bg-(--danger-bg) px-4 py-3 text-sm text-(--danger)"
+        >
+          {error}
+        </div>
+      )}
+
+      {ready && filteredCategories.length === 0 && (
+        <CategoriesEmptyState
+          searchTerm={search}
+          onCreate={openCreate}
+          onClearSearch={() => setSearch("")}
+        />
+      )}
+
+      {ready && filteredCategories.length > 0 && (
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredCategories.map((cat) => (
+            <CategoryCard
+              key={cat._id}
+              category={cat}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </ul>
       )}
 
       <CategoryFormModal

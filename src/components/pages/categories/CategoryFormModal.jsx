@@ -3,8 +3,17 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Modal from "@/components/common/Modal";
+import { inputClass, labelClass } from "@/components/common/uiStyles";
+import ColorField from "./ColorField";
+import IconField from "./IconField";
+import { DEFAULT_CATEGORY_COLOR } from "./constants";
 
-export default function CategoryFormModal({ isOpen, onClose, onSubmit, initialData }) {
+export default function CategoryFormModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+}) {
   const [serverError, setServerError] = useState("");
 
   const {
@@ -13,7 +22,7 @@ export default function CategoryFormModal({ isOpen, onClose, onSubmit, initialDa
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: { name: "", description: "", color: "#7d7f4c" },
+    defaultValues: { name: "", description: "", color: DEFAULT_CATEGORY_COLOR },
   });
 
   useEffect(() => {
@@ -24,7 +33,7 @@ export default function CategoryFormModal({ isOpen, onClose, onSubmit, initialDa
         color: initialData.color,
       });
     } else {
-      reset({ name: "", description: "", color: "#7d7f4c" });
+      reset({ name: "", description: "", color: DEFAULT_CATEGORY_COLOR });
     }
   }, [initialData, reset, isOpen]);
 
@@ -47,53 +56,80 @@ export default function CategoryFormModal({ isOpen, onClose, onSubmit, initialDa
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Edit Category" : "New Category"}>
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4" noValidate>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={initialData ? "Edit Category" : "New Category"}
+    >
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        className="space-y-5"
+        noValidate
+      >
         <div>
-          <input
-            placeholder="Name"
-            {...register("name", { required: "Name is required" })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          {errors.name && <p className="text-[var(--danger)] text-xs mt-1">{errors.name.message}</p>}
-        </div>
-
-        <div>
-          <textarea
-            placeholder="Description"
-            rows={3}
-            {...register("description")}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <label className="text-sm text-[var(--text-secondary)]">Color</label>
-          <input type="color" {...register("color")} className="h-9 w-14 rounded cursor-pointer" />
-        </div>
-
-        <div>
-          <label className="text-sm text-[var(--text-secondary)] block mb-1">
-            Icon {!initialData && "(required)"}
+          <label htmlFor="category-name" className={labelClass}>
+            Name
           </label>
           <input
-            type="file"
-            accept="image/*"
-            {...register("icon", { required: !initialData ? "Icon is required" : false })}
-            className="w-full text-sm text-[var(--text-secondary)]"
+            id="category-name"
+            placeholder="e.g. Web Development"
+            aria-invalid={errors.name ? "true" : "false"}
+            {...register("name", { required: "Name is required" })}
+            className={inputClass(!!errors.name)}
           />
-          {errors.icon && <p className="text-[var(--danger)] text-xs mt-1">{errors.icon.message}</p>}
+          {errors.name && (
+            <p className="mt-1.5 text-xs text-(--danger)">
+              {errors.name.message}
+            </p>
+          )}
         </div>
 
-        {serverError && <p className="text-[var(--danger)] text-sm">{serverError}</p>}
+        <div>
+          <label htmlFor="category-description" className={labelClass}>
+            Description
+          </label>
+          <textarea
+            id="category-description"
+            placeholder="Short description (optional)"
+            rows={3}
+            {...register("description")}
+            className={`${inputClass(false)} resize-none`}
+          />
+        </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full p-2.5 rounded-lg bg-[var(--primary)] text-[var(--background)] font-medium hover:bg-[var(--primary-hover)] transition-colors"
-        >
-          {isSubmitting ? "Saving..." : "Save"}
-        </button>
+        <ColorField register={register} />
+        <IconField
+          register={register}
+          error={errors.icon}
+          initialData={initialData}
+        />
+
+        {serverError && (
+          <p
+            role="alert"
+            className="rounded-lg bg-(--danger-bg) px-3 py-2.5 text-sm text-(--danger)"
+          >
+            {serverError}
+          </p>
+        )}
+
+        {/* Mobile e stack, sm+ e ek line e */}
+        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-(--border) px-5 py-2.5 text-sm font-medium text-(--text-primary) transition-colors hover:bg-(--border-light)"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-xl bg-(--primary) px-5 py-2.5 text-sm font-semibold text-background transition-all hover:bg-(--primary-hover) active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting ? "Saving..." : "Save"}
+          </button>
+        </div>
       </form>
     </Modal>
   );
