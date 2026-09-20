@@ -9,12 +9,15 @@ export function useProfile() {
   const [error, setError] = useState("");
 
   const fetchProfile = useCallback(async () => {
+    console.error("[debug] useProfile: start"); // temporary
     setLoading(true);
     setError("");
     try {
       const res = await getMe();
+      console.error("[debug] useProfile: getMe done, user found:", Boolean(res?.data?.user)); // temporary
       setProfile(res.data.user);
     } catch (err) {
+      console.error("[debug] useProfile: failed:", err.message); // temporary
       setError(err.message);
     } finally {
       setLoading(false);
