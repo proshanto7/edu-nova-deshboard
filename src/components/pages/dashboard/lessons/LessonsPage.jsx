@@ -1,24 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useLessons } from "@/hooks/useLessons";
+import PageHeader from "@/components/common/PageHeader";
+import { ArrowLeftIcon } from "@/components/common/Icons";
+import { focusRing } from "@/components/common/uiStyles";
+import LessonItem from "./LessonItem";
+import LessonsSkeleton from "./LessonsSkeleton";
+import LessonsEmptyState from "./LessonsEmptyState";
 import LessonFormModal from "./LessonFormModal";
-
-function formatDuration(seconds) {
-  if (!seconds) return "-";
-
-  if (seconds < 60) {
-    return `${seconds} sec`;
-  }
-
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-
-  return remainingSeconds > 0
-    ? `${minutes}m ${remainingSeconds}s`
-    : `${minutes} min`;
-}
 
 export default function LessonsPage({ courseId }) {
   const { lessons, loading, error, addLesson, editLesson, removeLesson } =
@@ -53,112 +44,61 @@ export default function LessonsPage({ courseId }) {
     }
   };
 
+  // Order onujayi sort
+  const sortedLessons = useMemo(
+    () => (lessons ?? []).slice().sort((a, b) => a.order - b.order),
+    [lessons],
+  );
+
+  const total = sortedLessons.length;
+  const ready = !loading && !error;
+
+  let subtitle;
+  if (loading) subtitle = "Loading lessons...";
+  else
+    subtitle = `${total} ${total === 1 ? "lesson" : "lessons"} in this course`;
+
   return (
-    <div className="p-6">
+    <div className="mx-auto w-full max-w-4xl p-4 sm:p-6 lg:p-8">
       <Link
         href="/dashboard/courses"
-        className="text-sm text-[var(--accent)] hover:underline"
+        className={`mb-4 inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-(--accent) hover:underline ${focusRing}`}
       >
-        ← Back to Courses
+        <ArrowLeftIcon />
+        Back to Courses
       </Link>
 
-      <div className="flex items-center justify-between mt-4 mb-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-          Lessons
-        </h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--accent-text)] font-medium hover:bg-[var(--accent-hover)] transition-colors"
+      <PageHeader
+        title="Lessons"
+        subtitle={subtitle}
+        actionLabel="New Lesson"
+        onAction={openCreate}
+      />
+
+      {loading && <LessonsSkeleton />}
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-xl border border-(--danger)/30 bg-(--danger-bg) px-4 py-3 text-sm text-(--danger)"
         >
-          + New Lesson
-        </button>
-      </div>
-
-      {loading && <p className="text-[var(--text-secondary)]">Loading...</p>}
-      {error && <p className="text-[var(--danger)]">{error}</p>}
-
-      {!loading && !error && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background-card)] overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-[var(--border-light)]">
-                <th className="p-3 text-[var(--text-secondary)] font-medium">
-                  Order
-                </th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">
-                  Title
-                </th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">
-                  Preview
-                </th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">
-                  Duration
-                </th>
-                <th className="p-3 text-[var(--text-secondary)] font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {lessons
-                .slice()
-                .sort((a, b) => a.order - b.order)
-                .map((lesson) => (
-                  <tr
-                    key={lesson._id}
-                    className="border-b border-[var(--border-light)] last:border-0"
-                  >
-                    <td className="p-3 text-[var(--text-secondary)]">
-                      {lesson.order}
-                    </td>
-                    <td className="p-3 text-[var(--text-primary)]">
-                      {lesson.title}
-                    </td>
-                    <td className="p-3">
-                      {lesson.isPreview ? (
-                        <span className="text-[var(--success)] text-xs">
-                          Free
-                        </span>
-                      ) : (
-                        <span className="text-[var(--text-muted)] text-xs">
-                          Locked
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="p-3 text-(--text-secondary)">
-                      {formatDuration(lesson.duration)}
-                    </td>
-
-                    <td className="p-3 space-x-2">
-                      <button
-                        onClick={() => openEdit(lesson)}
-                        className="text-[var(--accent)] hover:underline text-xs"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(lesson._id)}
-                        className="text-[var(--danger)] hover:underline text-xs"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              {lessons.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="p-6 text-center text-[var(--text-muted)]"
-                  >
-                    No lessons yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          {error}
         </div>
+      )}
+
+      {ready && total === 0 && <LessonsEmptyState onCreate={openCreate} />}
+
+      {ready && total > 0 && (
+        <ul className="space-y-3">
+          {sortedLessons.map((lesson) => (
+            <LessonItem
+              key={lesson._id}
+              lesson={lesson}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </ul>
       )}
 
       <LessonFormModal

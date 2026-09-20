@@ -85,3 +85,30 @@ export const ImageIcon = ({ className }) => (
     <path d="M21 15l-5-5L5 21" />
   </IconBase>
 );
+
+export const ArrowLeftIcon = ({ className }) => (
+  <IconBase className={className}>
+    <path d="M19 12H5M12 19l-7-7 7-7" />
+  </IconBase>
+);
+
+export const ClockIcon = ({ className }) => (
+  <IconBase className={className}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 2" />
+  </IconBase>
+);
+
+export const LockIcon = ({ className }) => (
+  <IconBase className={className}>
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </IconBase>
+);
+
+export const PlayIcon = ({ className }) => (
+  <IconBase className={className}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M10 8l6 4-6 4V8z" />
+  </IconBase>
+);

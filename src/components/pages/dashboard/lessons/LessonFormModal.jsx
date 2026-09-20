@@ -3,8 +3,19 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Modal from "@/components/common/Modal";
+import FormField from "@/components/common/FormField";
+import ToggleField from "@/components/common/ToggleField";
+import { inputClass } from "@/components/common/uiStyles";
+import LessonVideoField from "./LessonVideoField";
+import { EMPTY_LESSON_FORM } from "./constants";
 
-export default function LessonFormModal({ isOpen, onClose, onSubmit, initialData, courseId }) {
+export default function LessonFormModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+  courseId,
+}) {
   const [serverError, setServerError] = useState("");
 
   const {
@@ -13,7 +24,7 @@ export default function LessonFormModal({ isOpen, onClose, onSubmit, initialData
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: { title: "", description: "", order: 1, isPreview: false },
+    defaultValues: EMPTY_LESSON_FORM,
   });
 
   useEffect(() => {
@@ -25,7 +36,7 @@ export default function LessonFormModal({ isOpen, onClose, onSubmit, initialData
         isPreview: initialData.isPreview,
       });
     } else {
-      reset({ title: "", description: "", order: 1, isPreview: false });
+      reset(EMPTY_LESSON_FORM);
     }
   }, [initialData, reset, isOpen]);
 
@@ -50,66 +61,101 @@ export default function LessonFormModal({ isOpen, onClose, onSubmit, initialData
     }
   };
 
+  // min: 1 rule e message nai, tai fallback message dekhabo
+  const orderError = errors.order
+    ? errors.order.message || "Order must be 1 or more"
+    : "";
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Edit Lesson" : "New Lesson"}>
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4" noValidate>
-        <div>
-          <input
-            placeholder="Lesson Title"
-            {...register("title", { required: "Title is required" })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          {errors.title && <p className="text-[var(--danger)] text-xs mt-1">{errors.title.message}</p>}
-        </div>
-
-        <div>
-          <textarea
-            placeholder="Description"
-            rows={2}
-            {...register("description")}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <input
-              type="number"
-              placeholder="Order"
-              {...register("order", { required: "Order is required", min: 1 })}
-              className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-            />
-            {errors.order && <p className="text-[var(--danger)] text-xs mt-1">{errors.order.message}</p>}
-          </div>
-
-          <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-            <input type="checkbox" {...register("isPreview")} />
-            Free Preview
-          </label>
-        </div>
-
-        <div>
-          <label className="text-sm text-[var(--text-secondary)] block mb-1">
-            Video {!initialData && "(required)"}
-          </label>
-          <input
-            type="file"
-            accept="video/*"
-            {...register("video", { required: !initialData ? "Video is required" : false })}
-            className="w-full text-sm text-[var(--text-secondary)]"
-          />
-          {errors.video && <p className="text-[var(--danger)] text-xs mt-1">{errors.video.message}</p>}
-        </div>
-
-        {serverError && <p className="text-[var(--danger)] text-sm">{serverError}</p>}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full p-2.5 rounded-lg bg-[var(--primary)] text-[var(--background)] font-medium hover:bg-[var(--primary-hover)] transition-colors"
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={initialData ? "Edit Lesson" : "New Lesson"}
+    >
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        className="space-y-5"
+        noValidate
+      >
+        <FormField
+          label="Lesson title"
+          htmlFor="lesson-title"
+          error={errors.title?.message}
         >
-          {isSubmitting ? "Saving..." : "Save"}
-        </button>
+          <input
+            id="lesson-title"
+            placeholder="e.g. Introduction to Components"
+            {...register("title", { required: "Title is required" })}
+            className={inputClass(!!errors.title)}
+          />
+        </FormField>
+
+        <FormField
+          label="Description"
+          htmlFor="lesson-description"
+          hint="(optional)"
+        >
+          <textarea
+            id="lesson-description"
+            placeholder="What is covered in this lesson?"
+            rows={3}
+            {...register("description")}
+            className={`${inputClass(false)} resize-none`}
+          />
+        </FormField>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField label="Order" htmlFor="lesson-order" error={orderError}>
+            <input
+              id="lesson-order"
+              type="number"
+              inputMode="numeric"
+              placeholder="1"
+              {...register("order", { required: "Order is required", min: 1 })}
+              className={inputClass(!!errors.order)}
+            />
+          </FormField>
+
+          <ToggleField
+            id="lesson-is-preview"
+            label="Free Preview"
+            inputProps={register("isPreview")}
+            className="sm:mt-[1.65rem]"
+          />
+        </div>
+
+        <LessonVideoField
+          register={register}
+          error={errors.video}
+          initialData={initialData}
+        />
+
+        {serverError && (
+          <p
+            role="alert"
+            className="rounded-lg bg-(--danger-bg) px-3 py-2.5 text-sm text-(--danger)"
+          >
+            {serverError}
+          </p>
+        )}
+
+        {/* Mobile e stack, sm+ e ek line e */}
+        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-(--border) px-5 py-2.5 text-sm font-medium text-(--text-primary) transition-colors hover:bg-(--border-light)"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-xl bg-(--primary) px-5 py-2.5 text-sm font-semibold text-background transition-all hover:bg-(--primary-hover) active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting ? "Saving..." : "Save"}
+          </button>
+        </div>
       </form>
     </Modal>
   );
