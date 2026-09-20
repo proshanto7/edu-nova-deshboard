@@ -82,7 +82,7 @@ export default function CourseCard({ course, onEdit, onDelete }) {
         <div className="mt-auto pt-4">
           <div className="grid grid-cols-3 gap-2 border-t border-(--border-light) pt-3">
             <Link
-              href={`/courses/${course._id}/lessons`}
+              href={`/dashboard/courses/${course._id}/lessons`}
               className={`${actionBase} border-(--success)/30 text-(--success) hover:bg-(--success)/10 ${focusRing}`}
             >
               <BookIcon />

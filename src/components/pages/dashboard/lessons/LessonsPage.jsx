@@ -56,7 +56,7 @@ export default function LessonsPage({ courseId }) {
   return (
     <div className="p-6">
       <Link
-        href="/courses"
+        href="/dashboard/courses"
         className="text-sm text-[var(--accent)] hover:underline"
       >
         ← Back to Courses
