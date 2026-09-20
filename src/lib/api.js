@@ -81,27 +81,27 @@ export const deleteCategory = (id) => {
 // ======================================================
 
 export const getCourses = (params = {}) => {
-  return apiRequest(`/course${toQueryString(params)}`);
+  return apiRequest(`/courses${toQueryString(params)}`);
 };
 
 export const getCourse = (id) => {
-  return apiRequest(`/course/${id}`);
+  return apiRequest(`/courses/${id}`);
 };
 
 export const getCourseBySlug = (slug) => {
-  return apiRequest(`/course/slug/${slug}`);
+  return apiRequest(`/courses/slug/${slug}`);
 };
 
 export const createCourse = (data) => {
-  return apiRequest("/course", "POST", data);
+  return apiRequest("/courses", "POST", data);
 };
 
 export const updateCourse = (id, data) => {
-  return apiRequest(`/course/${id}`, "PATCH", data);
+  return apiRequest(`/courses/${id}`, "PATCH", data);
 };
 
 export const deleteCourse = (id) => {
-  return apiRequest(`/course/${id}`, "DELETE");
+  return apiRequest(`/courses/${id}`, "DELETE");
 };
 
 // ======================================================

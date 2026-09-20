@@ -8,10 +8,10 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 const ADMIN_LINKS = [
   { href: "/dashboard", label: "Overview" },
   { href: "/categories", label: "Categories" },
-  { href: "/dashboard/courses", label: "Courses" },
-  { href: "/dashboard/students", label: "Students" },
-  { href: "/dashboard/activity-log", label: "Activity Log" },
-  { href: "/dashboard/settings", label: "Settings" },
+  { href: "/courses", label: "Courses" },
+  { href: "/students", label: "Students" },
+  { href: "/activity-log", label: "Activity Log" },
+  { href: "/settings", label: "Settings" },
 ];
 
 const STUDENT_LINKS = [
