@@ -57,6 +57,11 @@ export const getAllUsers = (params = {}) =>
 export const updateUserRole = (id, data) =>
   apiRequest(`/auth/${id}/role`, "PATCH", data);
 
+// Create, Update, Delete user (🔧 prefix /user থেকে /auth এ বদলানো)
+export const createUser = (data) => apiRequest("/auth", "POST", data);
+export const updateUser = (id, data) => apiRequest(`/auth/${id}`, "PATCH", data);
+export const deleteUser = (id) => apiRequest(`/auth/${id}`, "DELETE");
+
 // ======================================================
 // CATEGORIES
 // ======================================================
