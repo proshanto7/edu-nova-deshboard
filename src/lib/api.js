@@ -17,20 +17,26 @@ const toQueryString = (params = {}) => {
 // AUTH
 // ======================================================
 
-export const registerUser = (data) => apiRequest("/auth/register", "POST", data);
+export const registerUser = (data) =>
+  apiRequest("/auth/register", "POST", data);
 export const loginUser = (data) => apiRequest("/auth/login", "POST", data);
 export const logoutUser = () => apiRequest("/auth/logout", "POST");
-export const verifyEmailOtp = (data) => apiRequest("/auth/verify-email", "POST", data);
-export const resendVerification = (data) => apiRequest("/auth/resend-verification", "POST", data);
+export const verifyEmailOtp = (data) =>
+  apiRequest("/auth/verify-email", "POST", data);
+export const resendVerification = (data) =>
+  apiRequest("/auth/resend-verification", "POST", data);
 
 // Step 1: email → OTP পাঠানো
-export const forgotPassword = (data) => apiRequest("/auth/forgot-password", "POST", data);
+export const forgotPassword = (data) =>
+  apiRequest("/auth/forgot-password", "POST", data);
 
 // Step 2: email + OTP → resetToken পাওয়া (🆕 আগে ছিল না)
-export const verifyResetOtp = (data) => apiRequest("/auth/verify-reset-otp", "POST", data);
+export const verifyResetOtp = (data) =>
+  apiRequest("/auth/verify-reset-otp", "POST", data);
 
 // Step 3: resetToken + newPassword → password change (🔧 signature বদলানো, token আর URL param না)
-export const resetPassword = (data) => apiRequest("/auth/reset-password", "POST", data);
+export const resetPassword = (data) =>
+  apiRequest("/auth/reset-password", "POST", data);
 
 // ======================================================
 // USER - SELF
@@ -38,15 +44,18 @@ export const resetPassword = (data) => apiRequest("/auth/reset-password", "POST"
 
 export const getMe = () => apiRequest("/auth/me");
 export const updateMe = (data) => apiRequest("/auth/me", "PATCH", data);
-export const changePassword = (data) => apiRequest("/auth/change-password", "PATCH", data);
+export const changePassword = (data) =>
+  apiRequest("/auth/change-password", "PATCH", data);
 export const deactivateMe = () => apiRequest("/auth/me", "DELETE");
 
 // ======================================================
 // USERS - ADMIN (🔧 prefix /user থেকে /auth এ বদলানো)
 // ======================================================
 
-export const getAllUsers = (params = {}) => apiRequest(`/auth${toQueryString(params)}`);
-export const updateUserRole = (id, data) => apiRequest(`/auth/${id}/role`, "PATCH", data);
+export const getAllUsers = (params = {}) =>
+  apiRequest(`/auth${toQueryString(params)}`);
+export const updateUserRole = (id, data) =>
+  apiRequest(`/auth/${id}/role`, "PATCH", data);
 
 // ======================================================
 // CATEGORIES
@@ -147,6 +156,9 @@ export const getCourseEnrollments = (courseId) => {
 export const getMyEnrollments = () => {
   return apiRequest("/enrollment/my");
 };
+
+export const getStudentEnrollments = (studentId) =>
+  apiRequest(`/enrollment/student/${studentId}`);
 
 // ======================================================
 // PROGRESS

@@ -1,14 +1,14 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "@/components/common/Modal";
-import { enrollStudent } from "@/lib/api";
-import { useDropdownData } from "@/hooks/useDropdownData";
+import { enrollStudent, getCourses } from "@/lib/api";
 
 export default function EnrollModal({ isOpen, onClose, student, onSuccess }) {
   const [serverError, setServerError] = useState("");
-  const { categories } = useDropdownData(); // reuse hook just for triggering fetch pattern; courses needed separately below
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
 
   const {
     register,
@@ -16,6 +16,24 @@ export default function EnrollModal({ isOpen, onClose, student, onSuccess }) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { courseId: "" } });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchCourses = async () => {
+      setCoursesLoading(true);
+      try {
+        const res = await getCourses({ limit: 100 });
+        setCourses(res.data.courses);
+      } catch (err) {
+        setServerError(err.message);
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [isOpen]);
 
   const onFormSubmit = async (data) => {
     setServerError("");
@@ -33,25 +51,39 @@ export default function EnrollModal({ isOpen, onClose, student, onSuccess }) {
     <Modal isOpen={isOpen} onClose={onClose} title={`Enroll ${student?.name || ""}`}>
       <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4" noValidate>
         <div>
-          <input
-            placeholder="Course ID"
-            {...register("courseId", { required: "Course ID is required" })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          <p className="text-xs text-[var(--text-muted)] mt-1">
-            Courses page থেকে course-এর ID কপি করে বসান (dropdown পরে যোগ করব চাইলে)।
-          </p>
+          <label className="text-xs text-(--text-secondary) block mb-1">Select Course</label>
+
+          {coursesLoading ? (
+            <p className="text-sm text-(--text-muted)">Loading courses...</p>
+          ) : (
+            <select
+              {...register("courseId", { required: "Please select a course" })}
+              className="w-full p-2.5 rounded-lg border border-(--border) bg-(--background-input) text-(--text-primary)"
+            >
+              <option value="">-- Select a course --</option>
+              {courses.map((course) => (
+                <option key={course._id} value={course._id}>
+                  {course.title} {course.isFree ? "(Free)" : `— ৳${course.price}`}
+                </option>
+              ))}
+            </select>
+          )}
+
           {errors.courseId && (
-            <p className="text-[var(--danger)] text-xs mt-1">{errors.courseId.message}</p>
+            <p className="text-(--danger) text-xs mt-1">{errors.courseId.message}</p>
+          )}
+
+          {!coursesLoading && courses.length === 0 && (
+            <p className="text-xs text-(--text-muted) mt-1">No courses available yet.</p>
           )}
         </div>
 
-        {serverError && <p className="text-[var(--danger)] text-sm">{serverError}</p>}
+        {serverError && <p className="text-(--danger) text-sm">{serverError}</p>}
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full p-2.5 rounded-lg bg-[var(--accent)] text-[var(--accent-text)] font-medium hover:bg-[var(--accent-hover)] transition-colors"
+          disabled={isSubmitting || coursesLoading || courses.length === 0}
+          className="w-full p-2.5 rounded-lg bg-(--accent) text-(--accent-text) font-medium hover:bg-(--accent-hover) transition-colors disabled:opacity-50"
         >
           {isSubmitting ? "Enrolling..." : "Enroll"}
         </button>
