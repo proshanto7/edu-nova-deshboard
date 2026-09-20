@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useCourses } from "@/hooks/useCourses";
 import CourseFormModal from "./CourseFormModal";
 
@@ -79,6 +80,12 @@ export default function CoursesPage() {
                   </td>
                   <td className="p-3 text-(--text-secondary)">{course.students}</td>
                   <td className="p-3 space-x-2">
+                    <Link
+                      href={`/courses/${course._id}/lessons`}
+                      className="text-(--success) hover:underline text-xs"
+                    >
+                      Lessons
+                    </Link>
                     <button onClick={() => openEdit(course)} className="text-(--accent) hover:underline text-xs">
                       Edit
                     </button>
