@@ -1,8 +1,29 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 export default function EnrollmentChart({ trend }) {
   const chartData = trend.map((item) => ({
@@ -11,19 +32,33 @@ export default function EnrollmentChart({ trend }) {
   }));
 
   return (
-    <div className="p-5 rounded-xl border border-[var(--border)] bg-[var(--background-card)] mb-8 transition-colors">
-      <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">
+    <div className="mb-6 min-w-0 rounded-xl border border-(--border) bg-(--background-card) p-4 transition-colors sm:mb-8 sm:p-5">
+      <h3 className="mb-4 text-base font-semibold text-(--text-primary)">
         Enrollment Trend (Last 6 Months)
       </h3>
 
       {chartData.length === 0 ? (
-        <p className="text-[var(--text-muted)] text-sm">No enrollment data yet.</p>
+        <p className="text-sm text-(--text-muted)">No enrollment data yet.</p>
       ) : (
-        <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={chartData}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart
+            data={chartData}
+            margin={{ top: 5, right: 12, left: 0, bottom: 0 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="label" stroke="var(--text-secondary)" fontSize={12} />
-            <YAxis allowDecimals={false} stroke="var(--text-secondary)" fontSize={12} />
+            <XAxis
+              dataKey="label"
+              stroke="var(--text-secondary)"
+              fontSize={12}
+              interval="preserveStartEnd"
+              minTickGap={16}
+            />
+            <YAxis
+              allowDecimals={false}
+              stroke="var(--text-secondary)"
+              fontSize={12}
+              width={36}
+            />
             <Tooltip
               contentStyle={{
                 background: "var(--background-card)",
@@ -32,7 +67,13 @@ export default function EnrollmentChart({ trend }) {
                 color: "var(--text-primary)",
               }}
             />
-            <Line type="monotone" dataKey="enrollments" stroke="var(--accent)" strokeWidth={2} dot={{ fill: "var(--accent)" }} />
+            <Line
+              type="monotone"
+              dataKey="enrollments"
+              stroke="var(--accent)"
+              strokeWidth={2}
+              dot={{ fill: "var(--accent)" }}
+            />
           </LineChart>
         </ResponsiveContainer>
       )}

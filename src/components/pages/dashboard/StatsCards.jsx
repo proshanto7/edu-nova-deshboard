@@ -10,14 +10,18 @@ export default function StatsCards({ overview }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+    <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="p-5 rounded-xl border border-[var(--border)] bg-[var(--background-card)] transition-colors"
+          className="min-w-0 rounded-xl border border-(--border) bg-(--background-card) p-4 transition-colors sm:p-5"
         >
-          <p className="text-sm text-[var(--text-secondary)] mb-2">{card.label}</p>
-          <p className="text-2xl font-bold text-[var(--text-primary)]">{card.value}</p>
+          <p className="mb-1.5 text-xs text-(--text-secondary) sm:mb-2 sm:text-sm">
+            {card.label}
+          </p>
+          <p className="wrap-break-word text-xl font-bold text-(--text-primary) sm:text-2xl">
+            {card.value}
+          </p>
         </div>
       ))}
     </div>

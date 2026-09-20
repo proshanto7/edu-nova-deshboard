@@ -4,126 +4,128 @@
 
 :root {
   /* ========================================
-     LIGHT MODE (default — screenshot match)
+     LIGHT MODE (Modern Clean & Vibrant)
   ======================================== */
 
-  --background: #fdfbf7;
-  --foreground: #1c1c1e;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 
-  --primary: #1c1c1e;
-  --primary-hover: #000000;
+  --primary: #0f172a;
+  --primary-hover: #020617;
 
-  --secondary: #6b6b6b;
-  --secondary-light: #dad4ca;
-  --secondary-dark: #3d3d3d;
+  --secondary: #64748b;
+  --secondary-light: #e2e8f0;
+  --secondary-dark: #334155;
 
-  --accent: #7d7f4c;
-  --accent-hover: #676a3d;
+  --accent: #0ea5e9;
+  --accent-hover: #0284c7;
   --accent-text: #ffffff;
 
   --background-card: #ffffff;
   --background-input: #ffffff;
-  --background-map: #f0ede5;
+  --background-map: #f1f5f9;
 
   --text-primary: var(--primary);
   --text-secondary: var(--secondary);
-  --text-muted: #9a9890;
-  --text-light: #4a4a4a;
-  --text-placeholder: #a3a099;
+  --text-muted: #94a3b8;
+  --text-light: #475569;
+  --text-placeholder: #cbd5e1;
 
-  --border: rgba(0, 0, 0, 0.1);
-  --border-light: rgba(0, 0, 0, 0.06);
+  --border: rgba(15, 23, 42, 0.08);
+  --border-light: rgba(15, 23, 42, 0.04);
 
-  --success: #5a7a4a;
-  --footer-bg: #f0ebe1;
+  --success: #10b981;
+  --footer-bg: #f1f5f9;
 
-  --danger: #b0413e;
-  --danger-bg: #f7e8e7;
-  --warning: #a67c2e;
-  --warning-bg: #f5eddb;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  
   --sidebar-bg: var(--background-card);
   --sidebar-active-bg: var(--accent);
   --sidebar-active-text: var(--accent-text);
 
   /* Navbar */
-  --nav-bg: #fdfbf7;
-  --nav-logo-text: #1c1c1e;
-  --nav-logo-border: #1c1c1e;
-  --nav-text: #3d3d3d;
-  --nav-text-active: #1c1c1e;
-  --nav-text-hover: #1c1c1e;
-  --nav-active-border: #1c1c1e;
-  --nav-icon-border: #1c1c1e;
-  --nav-icon-text: #1c1c1e;
-  --nav-login-text: #1c1c1e;
-  --nav-divider: #b5b0a6;
-  --nav-accent: #7d7f4c;
-  --nav-accent-hover: #676a3d;
-  --nav-mobile-bg: #fdfbf7;
-  --nav-mobile-border: rgba(0, 0, 0, 0.08);
-  --nav-mobile-text: #2a2a2a;
+  --nav-bg: #f8fafc;
+  --nav-logo-text: #0f172a;
+  --nav-logo-border: #0f172a;
+  --nav-text: #475569;
+  --nav-text-active: #0f172a;
+  --nav-text-hover: #0f172a;
+  --nav-active-border: #0f172a;
+  --nav-icon-border: #cbd5e1;
+  --nav-icon-text: #0f172a;
+  --nav-login-text: #0f172a;
+  --nav-divider: #e2e8f0;
+  --nav-accent: #0ea5e9;
+  --nav-accent-hover: #0284c7;
+  --nav-mobile-bg: #f8fafc;
+  --nav-mobile-border: rgba(15, 23, 42, 0.08);
+  --nav-mobile-text: #1e293b;
 }
 
 .dark {
   /* ========================================
-     DARK MODE (your original theme)
+     DARK MODE (Modern Dark with Cyan/Blue Accent)
   ======================================== */
 
-  --background: #0b0b0b;
-  --foreground: #f5f1e8;
+  --background: #090d16;
+  --foreground: #f8fafc;
 
-  --primary: #f5f1e8;
+  --primary: #f8fafc;
   --primary-hover: #ffffff;
 
-  --secondary: #8f8b83;
-  --secondary-light: #dad4ca;
-  --secondary-dark: #242522;
+  --secondary: #94a3b8;
+  --secondary-light: #334155;
+  --secondary-dark: #0f172a;
 
-  --accent: #e8d8bd;
-  --accent-hover: #f5e8d2;
-  --accent-text: #1b1814;
+  --accent: #00d2ff;
+  --accent-hover: #38bdf8;
+  --accent-text: #090d16;
 
-  --background-card: #242522;
-  --background-input: #10110f;
-  --background-map: #303231;
+  --background-card: #131b2e;
+  --background-input: #0b1120;
+  --background-map: #1e293b;
 
   --text-primary: var(--primary);
   --text-secondary: var(--secondary);
-  --text-muted: #85837d;
-  --text-light: #d9d3c9;
-  --text-placeholder: #77746e;
+  --text-muted: #64748b;
+  --text-light: #cbd5e1;
+  --text-placeholder: #475569;
 
-  --border: rgba(255, 255, 255, 0.1);
-  --border-light: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.04);
 
-  --success: #b6c9ae;
-  --footer-bg: #050505;
+  --success: #34d399;
+  --footer-bg: #060910;
 
-  --danger: #e8837f;
-  --danger-bg: #2e1a19;
-  --warning: #e0b968;
-  --warning-bg: #2e2717;
+  --danger: #f87171;
+  --danger-bg: #2b1616;
+  --warning: #fbbf24;
+  --warning-bg: #292012;
+  
   --sidebar-bg: var(--background-card);
   --sidebar-active-bg: var(--accent);
   --sidebar-active-text: var(--accent-text);
 
   /* Navbar */
-  --nav-bg: #0f0f0f;
+  --nav-bg: #0d1322;
   --nav-logo-text: var(--primary);
   --nav-logo-border: var(--primary);
   --nav-text: var(--secondary);
   --nav-text-active: var(--primary);
   --nav-text-hover: var(--primary-hover);
   --nav-active-border: var(--primary);
-  --nav-icon-border: rgba(255, 255, 255, 0.3);
+  --nav-icon-border: rgba(255, 255, 255, 0.2);
   --nav-icon-text: var(--primary);
   --nav-login-text: var(--primary);
-  --nav-divider: #55534d;
+  --nav-divider: #1e293b;
   --nav-accent: var(--accent);
   --nav-accent-hover: var(--accent-hover);
-  --nav-mobile-bg: rgba(15, 15, 15, 0.97);
+  --nav-mobile-bg: rgba(13, 19, 34, 0.95);
   --nav-mobile-border: rgba(255, 255, 255, 0.08);
-  --nav-mobile-text: #d6d1c8;
+  --nav-mobile-text: #e2e8f0;
 }
 
 @theme inline {
@@ -143,7 +145,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
