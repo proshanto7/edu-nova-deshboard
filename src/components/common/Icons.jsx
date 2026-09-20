@@ -55,3 +55,33 @@ export const FolderIcon = ({ className = "h-6 w-6" }) => (
     <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
   </IconBase>
 );
+
+export const ChevronDownIcon = ({ className }) => (
+  <IconBase className={className}>
+    <path d="M6 9l6 6 6-6" />
+  </IconBase>
+);
+
+export const UsersIcon = ({ className }) => (
+  <IconBase className={className}>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </IconBase>
+);
+
+export const BookIcon = ({ className }) => (
+  <IconBase className={className}>
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </IconBase>
+);
+
+export const ImageIcon = ({ className }) => (
+  <IconBase className={className}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <circle cx="8.5" cy="8.5" r="1.5" />
+    <path d="M21 15l-5-5L5 21" />
+  </IconBase>
+);

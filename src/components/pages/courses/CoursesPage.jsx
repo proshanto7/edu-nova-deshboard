@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import { useCourses } from "@/hooks/useCourses";
+import PageHeader from "@/components/common/PageHeader";
+import SearchInput from "@/components/common/SearchInput";
+import CourseCard from "./CourseCard";
+import CoursesSkeleton from "./CoursesSkeleton";
+import CoursesEmptyState from "./CoursesEmptyState";
 import CourseFormModal from "./CourseFormModal";
 
 export default function CoursesPage() {
-  const { courses, loading, error, addCourse, editCourse, removeCourse } = useCourses();
+  const { courses, loading, error, addCourse, editCourse, removeCourse } =
+    useCourses();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
+  const [search, setSearch] = useState("");
 
   const openCreate = () => {
     setEditingCourse(null);
@@ -37,74 +43,80 @@ export default function CoursesPage() {
     }
   };
 
+  // Search: title, category name ba instructor name e match korle dekhabe
+  const query = search.trim().toLowerCase();
+  const isFiltering = query.length > 0;
+
+  const filteredCourses = useMemo(() => {
+    const list = courses ?? [];
+    if (!query) return list;
+    return list.filter(
+      (course) =>
+        course.title?.toLowerCase().includes(query) ||
+        course.category?.name?.toLowerCase().includes(query) ||
+        course.instructor?.name?.toLowerCase().includes(query),
+    );
+  }, [courses, query]);
+
+  const total = courses?.length ?? 0;
+  const ready = !loading && !error;
+
+  let subtitle;
+  if (loading) subtitle = "Loading courses...";
+  else if (isFiltering)
+    subtitle = `Showing ${filteredCourses.length} of ${total}`;
+  else subtitle = `${total} ${total === 1 ? "course" : "courses"} in total`;
+
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-(--text-primary)">Courses</h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 rounded-lg bg-(--accent) text-(--accent-text) font-medium hover:bg-(--accent-hover) transition-colors"
-        >
-          + New Course
-        </button>
-      </div>
+    <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+      <PageHeader
+        title="Courses"
+        subtitle={subtitle}
+        actionLabel="New Course"
+        onAction={openCreate}
+      />
 
-      {loading && <p className="text-(--text-secondary)">Loading...</p>}
-      {error && <p className="text-(--danger)">{error}</p>}
-
-      {!loading && !error && (
-        <div className="rounded-xl border border-(--border) bg-(--background-card) overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-(--border-light)">
-                <th className="p-3 text-(--text-secondary) font-medium">Image</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Title</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Category</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Price</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Students</th>
-                <th className="p-3 text-(--text-secondary) font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course) => (
-                <tr key={course._id} className="border-b border-(--border-light) last:border-0">
-                  <td className="p-3">
-                    {course.image?.url && (
-                      <img src={course.image.url} alt={course.title} className="w-10 h-10 rounded object-cover" />
-                    )}
-                  </td>
-                  <td className="p-3 text-(--text-primary)">{course.title}</td>
-                  <td className="p-3 text-(--text-secondary)">{course.category?.name}</td>
-                  <td className="p-3 text-(--text-secondary)">
-                    {course.isFree ? "Free" : `৳${course.price}`}
-                  </td>
-                  <td className="p-3 text-(--text-secondary)">{course.students}</td>
-                  <td className="p-3 space-x-2">
-                    <Link
-                      href={`/courses/${course._id}/lessons`}
-                      className="text-(--success) hover:underline text-xs"
-                    >
-                      Lessons
-                    </Link>
-                    <button onClick={() => openEdit(course)} className="text-(--accent) hover:underline text-xs">
-                      Edit
-                    </button>
-                    <button onClick={() => handleDelete(course._id)} className="text-(--danger) hover:underline text-xs">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {courses.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-6 text-center text-(--text-muted)">
-                    No courses yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {ready && total > 0 && (
+        <div className="mb-5 sm:max-w-sm">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search by title, category or instructor..."
+            label="Search courses"
+          />
         </div>
+      )}
+
+      {loading && <CoursesSkeleton />}
+
+      {error && (
+        <div
+          role="alert"
+          className="rounded-xl border border-(--danger)/30 bg-(--danger-bg) px-4 py-3 text-sm text-(--danger)"
+        >
+          {error}
+        </div>
+      )}
+
+      {ready && filteredCourses.length === 0 && (
+        <CoursesEmptyState
+          searchTerm={search}
+          onCreate={openCreate}
+          onClearSearch={() => setSearch("")}
+        />
+      )}
+
+      {ready && filteredCourses.length > 0 && (
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {filteredCourses.map((course) => (
+            <CourseCard
+              key={course._id}
+              course={course}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </ul>
       )}
 
       <CourseFormModal

@@ -3,11 +3,25 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Modal from "@/components/common/Modal";
+import FormField from "@/components/common/FormField";
+import SelectWrap, { selectClass } from "@/components/common/SelectWrap";
+import { inputClass } from "@/components/common/uiStyles";
 import { useDropdownData } from "@/hooks/useDropdownData";
+import CoursePricingFields from "./CoursePricingFields";
+import CourseImageField from "./CourseImageField";
+import { EMPTY_COURSE_FORM } from "./constants";
 
-export default function CourseFormModal({ isOpen, onClose, onSubmit, initialData }) {
+export default function CourseFormModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+}) {
   const [serverError, setServerError] = useState("");
   const { categories, mentors } = useDropdownData();
+
+  // Instructor dropdown e shudhu mentor gula dekhabe (student bad)
+  const mentorOptions = (mentors ?? []).filter((m) => m.role === "mentor");
 
   const {
     register,
@@ -15,17 +29,7 @@ export default function CourseFormModal({ isOpen, onClose, onSubmit, initialData
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      category: "",
-      instructor: "",
-      level: "beginner",
-      language: "English",
-      price: "",
-      discountPrice: "",
-      isFree: false,
-    },
+    defaultValues: EMPTY_COURSE_FORM,
   });
 
   useEffect(() => {
@@ -42,17 +46,7 @@ export default function CourseFormModal({ isOpen, onClose, onSubmit, initialData
         isFree: initialData.isFree,
       });
     } else {
-      reset({
-        title: "",
-        description: "",
-        category: "",
-        instructor: "",
-        level: "beginner",
-        language: "English",
-        price: "",
-        discountPrice: "",
-        isFree: false,
-      });
+      reset(EMPTY_COURSE_FORM);
     }
   }, [initialData, reset, isOpen]);
 
@@ -76,120 +70,150 @@ export default function CourseFormModal({ isOpen, onClose, onSubmit, initialData
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Edit Course" : "New Course"}>
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-3" noValidate>
-        <div>
-          <input
-            placeholder="Title"
-            {...register("title", { required: "Title is required" })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          {errors.title && <p className="text-[var(--danger)] text-xs mt-1">{errors.title.message}</p>}
-        </div>
-
-        <div>
-          <textarea
-            placeholder="Description"
-            rows={3}
-            {...register("description", { required: "Description is required" })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          {errors.description && (
-            <p className="text-[var(--danger)] text-xs mt-1">{errors.description.message}</p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <select
-              {...register("category", { required: "Category is required" })}
-              className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-            >
-              <option value="">Select Category</option>
-              {categories.map((c) => (
-                <option key={c._id} value={c._id}>{c.name}</option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="text-[var(--danger)] text-xs mt-1">{errors.category.message}</p>
-            )}
-          </div>
-
-          <div>
-            <select
-              {...register("instructor", { required: "Instructor is required" })}
-              className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-            >
-              <option value="">Select Instructor</option>
-              {mentors.map((m) => (
-                <option key={m._id} value={m._id}>{m.name}</option>
-              ))}
-            </select>
-            {errors.instructor && (
-              <p className="text-[var(--danger)] text-xs mt-1">{errors.instructor.message}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <select
-            {...register("level")}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          >
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-
-          <input
-            placeholder="Language"
-            {...register("language")}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            type="number"
-            placeholder="Price"
-            {...register("price", { required: "Price is required", min: 0 })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-          <input
-            type="number"
-            placeholder="Discount Price"
-            {...register("discountPrice", { min: 0 })}
-            className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background-input)] text-[var(--text-primary)]"
-          />
-        </div>
-
-        <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-          <input type="checkbox" {...register("isFree")} />
-          This course is free
-        </label>
-
-        <div>
-          <label className="text-sm text-[var(--text-secondary)] block mb-1">
-            Course Image {!initialData && "(required)"}
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            {...register("image", { required: !initialData ? "Image is required" : false })}
-            className="w-full text-sm text-[var(--text-secondary)]"
-          />
-          {errors.image && <p className="text-[var(--danger)] text-xs mt-1">{errors.image.message}</p>}
-        </div>
-
-        {serverError && <p className="text-[var(--danger)] text-sm">{serverError}</p>}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full p-2.5 rounded-lg bg-[var(--primary)] text-[var(--background)] font-medium hover:bg-[var(--primary-hover)] transition-colors"
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={initialData ? "Edit Course" : "New Course"}
+    >
+      <form
+        onSubmit={handleSubmit(onFormSubmit)}
+        className="space-y-5"
+        noValidate
+      >
+        <FormField
+          label="Title"
+          htmlFor="course-title"
+          error={errors.title?.message}
         >
-          {isSubmitting ? "Saving..." : "Save"}
-        </button>
+          <input
+            id="course-title"
+            placeholder="e.g. Complete React Bootcamp"
+            {...register("title", { required: "Title is required" })}
+            className={inputClass(!!errors.title)}
+          />
+        </FormField>
+
+        <FormField
+          label="Description"
+          htmlFor="course-description"
+          error={errors.description?.message}
+        >
+          <textarea
+            id="course-description"
+            placeholder="What will students learn?"
+            rows={3}
+            {...register("description", {
+              required: "Description is required",
+            })}
+            className={`${inputClass(!!errors.description)} resize-none`}
+          />
+        </FormField>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            label="Category"
+            htmlFor="course-category"
+            error={errors.category?.message}
+          >
+            <SelectWrap>
+              <select
+                id="course-category"
+                {...register("category", { required: "Category is required" })}
+                className={selectClass(!!errors.category)}
+              >
+                <option value="">Select Category</option>
+                {categories.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </SelectWrap>
+          </FormField>
+
+          <FormField
+            label="Instructor"
+            htmlFor="course-instructor"
+            error={errors.instructor?.message}
+          >
+            <SelectWrap>
+              <select
+                id="course-instructor"
+                {...register("instructor", {
+                  required: "Instructor is required",
+                })}
+                className={selectClass(!!errors.instructor)}
+              >
+                <option value="">Select Instructor</option>
+                {mentorOptions.map((m) => (
+                  <option key={m._id} value={m._id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+            </SelectWrap>
+          </FormField>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField label="Level" htmlFor="course-level">
+            <SelectWrap>
+              <select
+                id="course-level"
+                {...register("level")}
+                className={selectClass(false)}
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </SelectWrap>
+          </FormField>
+
+          <FormField label="Language" htmlFor="course-language">
+            <input
+              id="course-language"
+              placeholder="Language"
+              {...register("language")}
+              className={inputClass(false)}
+            />
+          </FormField>
+        </div>
+
+        <CoursePricingFields register={register} errors={errors} />
+
+        <CourseImageField
+          register={register}
+          error={errors.image}
+          initialData={initialData}
+        />
+
+        {serverError && (
+          <p
+            role="alert"
+            className="rounded-lg bg-(--danger-bg) px-3 py-2.5 text-sm text-(--danger)"
+          >
+            {serverError}
+          </p>
+        )}
+
+        {/* Mobile e stack, sm+ e ek line e */}
+        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-(--border) px-5 py-2.5 text-sm font-medium text-(--text-primary) transition-colors hover:bg-(--border-light)"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-xl bg-(--primary) px-5 py-2.5 text-sm font-semibold text-background transition-all hover:bg-(--primary-hover) active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting ? "Saving..." : "Save"}
+          </button>
+        </div>
       </form>
     </Modal>
   );
