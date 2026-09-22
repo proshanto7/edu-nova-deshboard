@@ -1,7 +1,27 @@
+"use client";
+
+import { useState } from "react";
 import FormField from "@/components/common/FormField";
 
-export default function CourseImageField({ register, error, initialData }) {
+export default function CourseImageField({
+  setValue,
+  clearErrors,
+  error,
+  initialData,
+}) {
   const isEditing = Boolean(initialData);
+  const [fileName, setFileName] = useState("");
+
+  const handleChange = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // same file abar select korle-o change trigger hobe
+
+    if (!file) return;
+
+    setFileName(file.name);
+    setValue("image", file, { shouldValidate: true, shouldDirty: true });
+    clearErrors?.("image");
+  };
 
   return (
     <FormField
@@ -28,11 +48,15 @@ export default function CourseImageField({ register, error, initialData }) {
         type="file"
         accept="image/*"
         aria-invalid={error ? "true" : "false"}
-        {...register("image", {
-          required: !isEditing ? "Image is required" : false,
-        })}
+        onChange={handleChange}
         className="w-full cursor-pointer rounded-xl border border-dashed border-(--border) bg-(--background-input) p-2 text-sm text-(--text-secondary) file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-(--accent) file:px-3 file:py-2 file:text-sm file:font-medium file:text-(--accent-text) hover:file:bg-(--accent-hover)"
       />
+
+      {fileName && (
+        <p className="mt-1.5 text-xs text-(--text-muted)">
+          Selected: {fileName}
+        </p>
+      )}
     </FormField>
   );
 }
