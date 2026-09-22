@@ -20,9 +20,16 @@ export default function CategoryFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: { name: "", description: "", color: DEFAULT_CATEGORY_COLOR },
+    defaultValues: {
+      name: "",
+      description: "",
+      color: DEFAULT_CATEGORY_COLOR,
+      icon: null,
+    },
   });
 
   useEffect(() => {
@@ -31,21 +38,35 @@ export default function CategoryFormModal({
         name: initialData.name,
         description: initialData.description || "",
         color: initialData.color,
+        icon: null,
       });
     } else {
-      reset({ name: "", description: "", color: DEFAULT_CATEGORY_COLOR });
+      reset({
+        name: "",
+        description: "",
+        color: DEFAULT_CATEGORY_COLOR,
+        icon: null,
+      });
     }
   }, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
+    // Icon manual check (na hole RHF file-input validation Vercel-e
+    // production build-e hydration timing issue-r jonno fail kore)
+    if (!initialData && !data.icon) {
+      setServerError("Category icon image is required");
+      return;
+    }
+
     setServerError("");
     try {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("description", data.description);
       formData.append("color", data.color);
-      if (data.icon && data.icon[0]) {
-        formData.append("icon", data.icon[0]);
+
+      if (data.icon) {
+        formData.append("icon", data.icon);
       }
 
       await onSubmit(formData);
@@ -99,7 +120,8 @@ export default function CategoryFormModal({
 
         <ColorField register={register} />
         <IconField
-          register={register}
+          setValue={setValue}
+          clearErrors={clearErrors}
           error={errors.icon}
           initialData={initialData}
         />
@@ -113,7 +135,6 @@ export default function CategoryFormModal({
           </p>
         )}
 
-        {/* Mobile e stack, sm+ e ek line e */}
         <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
           <button
             type="button"

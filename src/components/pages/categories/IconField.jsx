@@ -1,7 +1,22 @@
+"use client";
+
+import { useState } from "react";
 import { labelClass } from "@/components/common/uiStyles";
 
-export default function IconField({ register, error, initialData }) {
+export default function IconField({ setValue, clearErrors, error, initialData }) {
   const isEditing = Boolean(initialData);
+  const [fileName, setFileName] = useState("");
+
+  const handleChange = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // same file abar select korle-o change trigger hobe
+
+    if (!file) return;
+
+    setFileName(file.name);
+    setValue("icon", file, { shouldValidate: true, shouldDirty: true });
+    clearErrors?.("icon");
+  };
 
   return (
     <div>
@@ -30,11 +45,16 @@ export default function IconField({ register, error, initialData }) {
         type="file"
         accept="image/*"
         aria-invalid={error ? "true" : "false"}
-        {...register("icon", {
-          required: !isEditing ? "Icon is required" : false,
-        })}
+        onChange={handleChange}
         className="w-full cursor-pointer rounded-xl border border-dashed border-(--border) bg-(--background-input) p-2 text-sm text-(--text-secondary) file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-(--accent) file:px-3 file:py-2 file:text-sm file:font-medium file:text-(--accent-text) hover:file:bg-(--accent-hover)"
       />
+
+      {fileName && (
+        <p className="mt-1.5 text-xs text-(--text-muted)">
+          Selected: {fileName}
+        </p>
+      )}
+
       {error && (
         <p className="mt-1.5 text-xs text-(--danger)">{error.message}</p>
       )}
