@@ -27,9 +27,11 @@ export default function CourseFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: EMPTY_COURSE_FORM,
+    defaultValues: { ...EMPTY_COURSE_FORM, image: null },
   });
 
   useEffect(() => {
@@ -44,13 +46,20 @@ export default function CourseFormModal({
         price: initialData.price,
         discountPrice: initialData.discountPrice || "",
         isFree: initialData.isFree,
+        image: null,
       });
     } else {
-      reset(EMPTY_COURSE_FORM);
+      reset({ ...EMPTY_COURSE_FORM, image: null });
     }
   }, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
+   
+    if (!initialData && !data.image) {
+      setServerError("Course image is required");
+      return;
+    }
+
     setServerError("");
     try {
       const formData = new FormData();
@@ -58,8 +67,8 @@ export default function CourseFormModal({
         if (key === "image") return;
         formData.append(key, value);
       });
-      if (data.image && data.image[0]) {
-        formData.append("image", data.image[0]);
+      if (data.image) {
+        formData.append("image", data.image);
       }
 
       await onSubmit(formData);
@@ -183,7 +192,8 @@ export default function CourseFormModal({
         <CoursePricingFields register={register} errors={errors} />
 
         <CourseImageField
-          register={register}
+          setValue={setValue}
+          clearErrors={clearErrors}
           error={errors.image}
           initialData={initialData}
         />
@@ -197,7 +207,6 @@ export default function CourseFormModal({
           </p>
         )}
 
-        {/* Mobile e stack, sm+ e ek line e */}
         <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
           <button
             type="button"
