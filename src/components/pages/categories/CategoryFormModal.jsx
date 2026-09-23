@@ -32,23 +32,47 @@ export default function CategoryFormModal({
     },
   });
 
-  useEffect(() => {
-    if (initialData) {
-      reset({
-        name: initialData.name,
-        description: initialData.description || "",
-        color: initialData.color,
-        icon: null,
-      });
-    } else {
-      reset({
-        name: "",
-        description: "",
-        color: DEFAULT_CATEGORY_COLOR,
-        icon: null,
-      });
-    }
-  }, [initialData, reset, isOpen]);
+  // useEffect(() => {
+  //   if (initialData) {
+  //     reset({
+  //       name: initialData.name,
+  //       description: initialData.description || "",
+  //       color: initialData.color,
+  //       icon: null,
+  //     });
+  //   } else {
+  //     reset({
+  //       name: "",
+  //       description: "",
+  //       color: DEFAULT_CATEGORY_COLOR,
+  //       icon: null,
+  //     });
+  //   }
+  // }, [initialData, reset, isOpen]);
+
+
+useEffect(() => {
+  console.log("🔥 RESET RUNNING", {
+    initialData,
+    isOpen,
+  });
+
+  if (initialData) {
+    reset({
+      name: initialData.name,
+      description: initialData.description || "",
+      color: initialData.color,
+      icon: null,
+    });
+  } else {
+    reset({
+      name: "",
+      description: "",
+      color: DEFAULT_CATEGORY_COLOR,
+      icon: null,
+    });
+  }
+}, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
     console.log("FORM DATA:", data);
