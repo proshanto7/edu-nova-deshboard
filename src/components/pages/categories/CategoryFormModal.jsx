@@ -15,84 +15,37 @@ export default function CategoryFormModal({
   initialData,
 }) {
   const [serverError, setServerError] = useState("");
+
   const {
     register,
     handleSubmit,
     reset,
-    setValue,
-    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: {
-      name: "",
-      description: "",
-      color: DEFAULT_CATEGORY_COLOR,
-      icon: null,
-    },
+    defaultValues: { name: "", description: "", color: DEFAULT_CATEGORY_COLOR },
   });
 
-  // useEffect(() => {
-  //   if (initialData) {
-  //     reset({
-  //       name: initialData.name,
-  //       description: initialData.description || "",
-  //       color: initialData.color,
-  //       icon: null,
-  //     });
-  //   } else {
-  //     reset({
-  //       name: "",
-  //       description: "",
-  //       color: DEFAULT_CATEGORY_COLOR,
-  //       icon: null,
-  //     });
-  //   }
-  // }, [initialData, reset, isOpen]);
-
-const nameValue = watch("name")
-useEffect(() => {
-  console.log("🔥 RESET RUNNING", {
-    initialData,
-    isOpen,
-  });
-console.log("NAME VALUE:", nameValue);
-
-  if (initialData) {
-    reset({
-      name: initialData.name,
-      description: initialData.description || "",
-      color: initialData.color,
-      icon: null,
-    });
-  } else {
-    reset({
-      name: "",
-      description: "",
-      color: DEFAULT_CATEGORY_COLOR,
-      icon: null,
-    });
-  }
-}, [initialData, reset, isOpen]);
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        description: initialData.description || "",
+        color: initialData.color,
+      });
+    } else {
+      reset({ name: "", description: "", color: DEFAULT_CATEGORY_COLOR });
+    }
+  }, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
-    console.log("FORM DATA:", data);
-    console.log("NAME:", data.name);
-    // Icon manual check (na hole RHF file-input validation Vercel-e
-    // production build-e hydration timing issue-r jonno fail kore)
-    if (!initialData && !data.icon) {
-      setServerError("Category icon image is required");
-      return;
-    }
-
     setServerError("");
     try {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("description", data.description);
       formData.append("color", data.color);
-
-      if (data.icon) {
-        formData.append("icon", data.icon);
+      if (data.icon && data.icon[0]) {
+        formData.append("icon", data.icon[0]);
       }
 
       await onSubmit(formData);
@@ -146,8 +99,7 @@ console.log("NAME VALUE:", nameValue);
 
         <ColorField register={register} />
         <IconField
-          setValue={setValue}
-          clearErrors={clearErrors}
+          register={register}
           error={errors.icon}
           initialData={initialData}
         />
@@ -161,6 +113,7 @@ console.log("NAME VALUE:", nameValue);
           </p>
         )}
 
+        {/* Mobile e stack, sm+ e ek line e */}
         <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
           <button
             type="button"
