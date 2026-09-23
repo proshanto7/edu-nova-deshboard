@@ -15,7 +15,6 @@ export default function CategoryFormModal({
   initialData,
 }) {
   const [serverError, setServerError] = useState("");
-
   const {
     register,
     handleSubmit,
@@ -50,12 +49,13 @@ export default function CategoryFormModal({
   //   }
   // }, [initialData, reset, isOpen]);
 
-
+const nameValue = watch("name")
 useEffect(() => {
   console.log("🔥 RESET RUNNING", {
     initialData,
     isOpen,
   });
+console.log("NAME VALUE:", nameValue);
 
   if (initialData) {
     reset({
@@ -123,8 +123,6 @@ useEffect(() => {
             aria-invalid={errors.name ? "true" : "false"}
             {...register("name", { required: "Name is required" })}
             className={inputClass(!!errors.name)}
-            onChange={(e) => console.log("NAME TYPED:", e.target.value)}
-            // onChange: (e) => { console.log("NAME TYPED:", e .target.value;) });
           />
           {errors.name && (
             <p className="mt-1.5 text-xs text-(--danger)">
