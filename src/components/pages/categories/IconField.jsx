@@ -9,7 +9,7 @@ export default function IconField({ setValue, clearErrors, error, initialData })
 
   const handleChange = (e) => {
     const file = e.target.files?.[0];
-    e.target.value = ""; // same file abar select korle-o change trigger hobe
+    e.target.value = "";
 
     if (!file) return;
 
@@ -50,9 +50,7 @@ export default function IconField({ setValue, clearErrors, error, initialData })
       />
 
       {fileName && (
-        <p className="mt-1.5 text-xs text-(--text-muted)">
-          Selected: {fileName}
-        </p>
+        <p className="mt-1.5 text-xs text-(--text-muted)">Selected: {fileName}</p>
       )}
 
       {error && (

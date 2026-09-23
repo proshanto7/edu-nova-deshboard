@@ -8,7 +8,7 @@ import { inputClass } from "@/components/common/uiStyles";
 import PasswordField from "./PasswordField";
 import AvatarField from "./AvatarField";
 
-const EMPTY_FORM = { name: "", email: "", password: "" };
+const EMPTY_FORM = { name: "", email: "", password: "", avatar: null };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function MentorFormModal({
@@ -24,6 +24,7 @@ export default function MentorFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: EMPTY_FORM,
@@ -32,7 +33,12 @@ export default function MentorFormModal({
   useEffect(() => {
     setServerError("");
     if (initialData) {
-      reset({ name: initialData.name, email: initialData.email, password: "" });
+      reset({
+        name: initialData.name,
+        email: initialData.email,
+        password: "",
+        avatar: null,
+      });
     } else {
       reset(EMPTY_FORM);
     }
@@ -41,7 +47,7 @@ export default function MentorFormModal({
   const onFormSubmit = async (data) => {
     setServerError("");
     try {
-      // Image pathate hole FormData lagbe 
+      // Image pathate hole FormData lagbe
       const formData = new FormData();
       formData.append("name", data.name.trim());
       formData.append("email", data.email.trim());
@@ -51,8 +57,8 @@ export default function MentorFormModal({
         formData.append("password", data.password);
       }
 
-      if (data.avatar && data.avatar[0]) {
-        formData.append("avatar", data.avatar[0]);
+      if (data.avatar) {
+        formData.append("avatar", data.avatar);
       }
 
       await onSubmit(formData);
@@ -115,7 +121,7 @@ export default function MentorFormModal({
           isEditing={isEditing}
         />
 
-        <AvatarField register={register} initialData={initialData} />
+        <AvatarField setValue={setValue} initialData={initialData} />
 
         {serverError && (
           <p
