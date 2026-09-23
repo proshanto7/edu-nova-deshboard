@@ -51,6 +51,8 @@ export default function CategoryFormModal({
   }, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
+    console.log("FORM DATA:", data);
+    console.log("NAME:", data.name);
     // Icon manual check (na hole RHF file-input validation Vercel-e
     // production build-e hydration timing issue-r jonno fail kore)
     if (!initialData && !data.icon) {

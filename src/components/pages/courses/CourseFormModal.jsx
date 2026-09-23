@@ -54,7 +54,7 @@ export default function CourseFormModal({
   }, [initialData, reset, isOpen]);
 
   const onFormSubmit = async (data) => {
-   
+   console.log("SUBMIT DATA:", data);
     if (!initialData && !data.image) {
       setServerError("Course image is required");
       return;
