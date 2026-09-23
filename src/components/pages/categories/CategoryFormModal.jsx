@@ -99,6 +99,8 @@ export default function CategoryFormModal({
             aria-invalid={errors.name ? "true" : "false"}
             {...register("name", { required: "Name is required" })}
             className={inputClass(!!errors.name)}
+            onChange={(e) => console.log("NAME TYPED:", e.target.value)}
+            // onChange: (e) => { console.log("NAME TYPED:", e .target.value;) });
           />
           {errors.name && (
             <p className="mt-1.5 text-xs text-(--danger)">
