@@ -139,3 +139,17 @@ export const InboxIcon = ({ className }) => (
     <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
   </IconBase>
 );
+
+export const MailIcon = ({ className }) => (
+  <IconBase className={className}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="M22 7l-10 6L2 7" />
+  </IconBase>
+);
+
+export const AlertIcon = ({ className }) => (
+  <IconBase className={className}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 8v4M12 16h.01" />
+  </IconBase>
+);

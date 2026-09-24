@@ -1,10 +1,7 @@
-import LoginPage from "@/components/pages/LoginPage";
-export const metadata = {
-  title: "Log In",
-  description: "Log in to your account to continue learning.",
-};
-const page = () => {
-  return <LoginPage />;
-};
+import LoginPage from "@/components/pages/auth/LoginPage";
 
-export default page;
+export const metadata = { title: "Log in | Edu-Nova" };
+
+export default function Page() {
+  return <LoginPage />;
+}
