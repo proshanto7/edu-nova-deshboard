@@ -10,6 +10,7 @@ const ADMIN_LINKS = [
   { href: "/dashboard/categories", label: "Categories" },
   { href: "/dashboard/courses", label: "Courses" },
   { href: "/dashboard/students", label: "Students" },
+  { href: "/dashboard/enrollment-requests", label: "Enrollment Requests" },
   { href: "/dashboard/mentors", label: "Mentors" },
   // { href: "/dashboard/activity-log", label: "Activity Log" },
   { href: "/dashboard/settings", label: "Settings" },

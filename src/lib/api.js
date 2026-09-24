@@ -169,6 +169,25 @@ export const getStudentEnrollments = (studentId) =>
   apiRequest(`/enrollment/student/${studentId}`);
 
 // ======================================================
+// ENROLLMENT REQUESTS (student request -> admin approval)
+// ======================================================
+
+// params.status = "pending" | "approved" | "rejected" (na dile shob request)
+export const getEnrollmentRequests = (params = {}) => {
+  return apiRequest(`/enrollment-request${toQueryString(params)}`);
+};
+
+// Approve korle backend nijei Enrollment create kore dey
+export const approveEnrollmentRequest = (id) => {
+  return apiRequest(`/enrollment-request/${id}/approve`, "PATCH");
+};
+
+// reason optional — reviewNote hishebe save hoy
+export const rejectEnrollmentRequest = (id, reason = "") => {
+  return apiRequest(`/enrollment-request/${id}/reject`, "PATCH", { reason });
+};
+
+// ======================================================
 // PROGRESS
 // ======================================================
 

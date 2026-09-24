@@ -6,6 +6,7 @@ import StatsCards from "./StatsCards";
 import EnrollmentChart from "./EnrollmentChart";
 import TopCoursesTable from "./TopCoursesTable";
 import RecentActivityFeed from "./RecentActivityFeed";
+import PendingRequestsPanel from "./PendingRequestsPanel";
 
 export default function DashboardHome() {
   const { user, loading: authLoading } = useAuth();
@@ -31,7 +32,8 @@ export default function DashboardHome() {
 }
 
 function AdminOverview() {
-  const { summary, loading, error } = useDashboardSummary();
+  const { summary, loading, error, approveRequest, rejectRequest } =
+    useDashboardSummary();
 
   if (loading) {
     return (
@@ -54,6 +56,14 @@ function AdminOverview() {
       </h1>
 
       <StatsCards overview={summary.overview} />
+
+      <PendingRequestsPanel
+        requests={summary.pendingEnrollmentRequests ?? []}
+        totalPending={summary.overview.pendingEnrollmentRequests ?? 0}
+        onApprove={approveRequest}
+        onReject={rejectRequest}
+      />
+
       <EnrollmentChart trend={summary.enrollmentTrend} />
 
       <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
