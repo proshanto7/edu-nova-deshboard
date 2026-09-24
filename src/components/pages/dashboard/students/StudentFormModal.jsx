@@ -10,9 +10,15 @@ import { EyeIcon, EyeOffIcon } from "@/components/common/Icons";
 const EMPTY_FORM = { name: "", email: "", password: "" };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
+export default function StudentFormModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+}) {
   const [serverError, setServerError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const isEditing = Boolean(initialData);
 
   const {
     handleSubmit,
@@ -26,8 +32,12 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
   useEffect(() => {
     setServerError("");
     setShowPassword(false);
-    reset(EMPTY_FORM);
-  }, [isOpen, reset]);
+    if (initialData) {
+      reset({ name: initialData.name, email: initialData.email, password: "" });
+    } else {
+      reset(EMPTY_FORM);
+    }
+  }, [initialData, isOpen, reset]);
 
   const onFormSubmit = async (data) => {
     setServerError("");
@@ -35,7 +45,11 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
       const formData = new FormData();
       formData.append("name", data.name.trim());
       formData.append("email", data.email.trim());
-      formData.append("password", data.password);
+
+      // Edit e password khali thakle pathabo na (purano password thakbe)
+      if (data.password) {
+        formData.append("password", data.password);
+      }
 
       await onSubmit(formData);
       onClose();
@@ -45,7 +59,11 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="New Student">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEditing ? "Edit Student" : "New Student"}
+    >
       <form
         onSubmit={handleSubmit(onFormSubmit)}
         className="space-y-5"
@@ -114,6 +132,7 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
         <FormField
           label="Password"
           htmlFor="student-password"
+          hint={isEditing ? "(leave empty to keep current)" : undefined}
           error={errors.password?.message}
         >
           <div className="relative">
@@ -121,7 +140,7 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
               name="password"
               control={control}
               rules={{
-                required: "Password is required",
+                required: !isEditing ? "Password is required" : false,
                 minLength: {
                   value: 8,
                   message: "Password must be at least 8 characters",
@@ -132,7 +151,9 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
                   id="student-password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
-                  placeholder="At least 8 characters"
+                  placeholder={
+                    isEditing ? "New password" : "At least 8 characters"
+                  }
                   aria-invalid={errors.password ? "true" : "false"}
                   className={`${inputClass(!!errors.password)} pr-11!`}
                   value={field.value ?? ""}
@@ -176,7 +197,11 @@ export default function StudentFormModal({ isOpen, onClose, onSubmit }) {
             disabled={isSubmitting}
             className="rounded-xl bg-(--primary) px-5 py-2.5 text-sm font-semibold text-background transition-all hover:bg-(--primary-hover) active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting ? "Creating..." : "Create student"}
+            {isSubmitting
+              ? "Saving..."
+              : isEditing
+                ? "Save changes"
+                : "Create student"}
           </button>
         </div>
       </form>

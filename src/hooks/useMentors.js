@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getAllUsers, createUser, updateUser, deleteUser } from "@/lib/api";
+import {
+  getAllUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  updateUserStatus,
+} from "@/lib/api";
 
 export function useMentors() {
   const [mentors, setMentors] = useState([]);
@@ -48,6 +54,36 @@ export function useMentors() {
     setMentors((prev) => prev.filter((m) => m._id !== id));
   };
 
+  // Optimistic update: UI-te agei flip kore dei, request fail korle revert
+  const toggleMentorStatus = async (mentor) => {
+    const nextIsActive = !mentor.isActive;
+
+    setMentors((prev) =>
+      prev.map((m) =>
+        m._id === mentor._id ? { ...m, isActive: nextIsActive } : m,
+      ),
+    );
+
+    try {
+      const res = await updateUserStatus(mentor._id, nextIsActive);
+      const updated = res.data.user;
+
+      setMentors((prev) =>
+        prev.map((m) => (m._id === mentor._id ? { ...m, ...updated } : m)),
+      );
+
+      return { success: true };
+    } catch (err) {
+      setMentors((prev) =>
+        prev.map((m) =>
+          m._id === mentor._id ? { ...m, isActive: mentor.isActive } : m,
+        ),
+      );
+
+      return { success: false, message: err.message };
+    }
+  };
+
   return {
     mentors,
     loading,
@@ -55,6 +91,7 @@ export function useMentors() {
     addMentor,
     editMentor,
     removeMentor,
+    toggleMentorStatus,
     refetch: load,
   };
 }

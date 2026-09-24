@@ -10,8 +10,15 @@ import MentorsEmptyState from "./MentorsEmptyState";
 import MentorFormModal from "./MentorFormModal";
 
 export default function MentorsPage() {
-  const { mentors, loading, error, addMentor, editMentor, removeMentor } =
-    useMentors();
+  const {
+    mentors,
+    loading,
+    error,
+    addMentor,
+    editMentor,
+    removeMentor,
+    toggleMentorStatus,
+  } = useMentors();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingMentor, setEditingMentor] = useState(null);
   const [search, setSearch] = useState("");
@@ -113,6 +120,7 @@ export default function MentorsPage() {
               mentor={mentor}
               onEdit={openEdit}
               onDelete={handleDelete}
+              onToggleStatus={toggleMentorStatus}
             />
           ))}
         </ul>

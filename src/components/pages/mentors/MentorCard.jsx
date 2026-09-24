@@ -1,8 +1,29 @@
+"use client";
+
+import { useState } from "react";
 import Avatar from "@/components/common/Avatar";
 import { PencilIcon, TrashIcon } from "@/components/common/Icons";
 import { focusRing } from "@/components/common/uiStyles";
 
-export default function MentorCard({ mentor, onEdit, onDelete }) {
+export default function MentorCard({
+  mentor,
+  onEdit,
+  onDelete,
+  onToggleStatus,
+}) {
+  const [isToggling, setIsToggling] = useState(false);
+  const [toggleError, setToggleError] = useState("");
+
+  const handleToggleStatus = async () => {
+    setToggleError("");
+    setIsToggling(true);
+    const result = await onToggleStatus(mentor);
+    setIsToggling(false);
+    if (!result?.success) {
+      setToggleError(result?.message || "Failed to update status");
+    }
+  };
+
   const joined = mentor.createdAt
     ? new Date(mentor.createdAt).toLocaleDateString("en-GB", {
         month: "short",
@@ -44,7 +65,25 @@ export default function MentorCard({ mentor, onEdit, onDelete }) {
         {joined && (
           <span className="text-xs text-(--text-muted)">Joined {joined}</span>
         )}
+
+        {mentor.isActive ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-(--success)/10 px-2.5 py-1 text-xs font-medium text-(--success)">
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            Active
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-(--danger)/10 px-2.5 py-1 text-xs font-medium text-(--danger)">
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            Inactive
+          </span>
+        )}
       </div>
+
+      {toggleError && (
+        <p role="alert" className="mt-2 text-xs text-(--danger)">
+          {toggleError}
+        </p>
+      )}
 
       <div className="mt-auto pt-4">
         <div className="flex gap-2 border-t border-(--border-light) pt-3">
@@ -63,6 +102,22 @@ export default function MentorCard({ mentor, onEdit, onDelete }) {
             Delete
           </button>
         </div>
+
+        <button
+          onClick={handleToggleStatus}
+          disabled={isToggling}
+          className={`mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${focusRing} ${
+            mentor.isActive
+              ? "border-(--danger)/30 text-(--danger) hover:bg-(--danger-bg)"
+              : "border-(--success)/30 text-(--success) hover:bg-(--success)/10"
+          }`}
+        >
+          {isToggling
+            ? "Updating..."
+            : mentor.isActive
+              ? "Deactivate"
+              : "Activate"}
+        </button>
       </div>
     </li>
   );

@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   getAllUsers,
   createUser,
-  enrollStudent,
-  revokeEnrollment,
+  updateUser,
   updateUserStatus,
 } from "@/lib/api";
 
@@ -33,11 +32,23 @@ export function useStudents() {
 
   // Error hole throw hoy, form/modal e catch kore dekhano hoy.
   // formData = FormData (name, email, password)
-  const addStudent = useCallback(async (formData) => {
-    formData.append("role", "student");
-    await createUser(formData);
-    await fetchStudents();
-  }, [fetchStudents]);
+  const addStudent = useCallback(
+    async (formData) => {
+      formData.append("role", "student");
+      await createUser(formData);
+      await fetchStudents();
+    },
+    [fetchStudents],
+  );
+
+  // formData = FormData (name, email, password?) — password na thakle purano-i thake
+  const editStudent = useCallback(
+    async (id, formData) => {
+      await updateUser(id, formData);
+      await fetchStudents();
+    },
+    [fetchStudents],
+  );
 
   const toggleStudentStatus = useCallback(async (student) => {
     const nextIsActive = !student.isActive;
@@ -76,6 +87,7 @@ export function useStudents() {
     error,
     refetch: fetchStudents,
     addStudent,
+    editStudent,
     toggleStudentStatus,
   };
 }

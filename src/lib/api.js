@@ -26,15 +26,15 @@ export const verifyEmailOtp = (data) =>
 export const resendVerification = (data) =>
   apiRequest("/auth/resend-verification", "POST", data);
 
-// Step 1: email → OTP পাঠানো
+// Step 1: email → OTP Sent
 export const forgotPassword = (data) =>
   apiRequest("/auth/forgot-password", "POST", data);
 
-// Step 2: email + OTP → resetToken পাওয়া (🆕 আগে ছিল না)
+// Step 2: email + OTP → resetToken sent
 export const verifyResetOtp = (data) =>
   apiRequest("/auth/verify-reset-otp", "POST", data);
 
-// Step 3: resetToken + newPassword → password change (🔧 signature বদলানো, token আর URL param না)
+// Step 3: resetToken + newPassword → password change 
 export const resetPassword = (data) =>
   apiRequest("/auth/reset-password", "POST", data);
 
@@ -49,7 +49,7 @@ export const changePassword = (data) =>
 export const deactivateMe = () => apiRequest("/auth/me", "DELETE");
 
 // ======================================================
-// USERS - ADMIN (🔧 prefix /user থেকে /auth এ বদলানো)
+// USERS - ADMIN ONLY
 // ======================================================
 
 export const getAllUsers = (params = {}) =>
@@ -59,10 +59,10 @@ export const updateUserRole = (id, data) =>
 export const updateUserStatus = (id, isActive) =>
   apiRequest(`/auth/${id}/status`, "PATCH", { isActive });
 
-
-// Create, Update, Delete user (🔧 prefix /user থেকে /auth এ বদলানো)
+// Create, Update, Delete user - ADMIN ONLY
 export const createUser = (data) => apiRequest("/auth", "POST", data);
-export const updateUser = (id, data) => apiRequest(`/auth/${id}`, "PATCH", data);
+export const updateUser = (id, data) =>
+  apiRequest(`/auth/${id}`, "PATCH", data);
 export const deleteUser = (id) => apiRequest(`/auth/${id}`, "DELETE");
 
 // ======================================================
