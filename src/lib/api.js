@@ -56,6 +56,9 @@ export const getAllUsers = (params = {}) =>
   apiRequest(`/auth${toQueryString(params)}`);
 export const updateUserRole = (id, data) =>
   apiRequest(`/auth/${id}/role`, "PATCH", data);
+export const updateUserStatus = (id, isActive) =>
+  apiRequest(`/auth/${id}/status`, "PATCH", { isActive });
+
 
 // Create, Update, Delete user (🔧 prefix /user থেকে /auth এ বদলানো)
 export const createUser = (data) => apiRequest("/auth", "POST", data);

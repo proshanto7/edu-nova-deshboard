@@ -8,11 +8,20 @@ import StudentsSkeleton from "./StudentsSkeleton";
 import StudentsEmptyState from "./StudentsEmptyState";
 import EnrollModal from "./EnrollModal";
 import StudentEnrollmentsModal from "./StudentEnrollmentsModal";
+import StudentFormModal from "./StudentFormModal";
 
 export default function StudentsPage() {
-  const { students, loading, error, refetch } = useStudents();
+  const {
+    students,
+    loading,
+    error,
+    refetch,
+    addStudent,
+    toggleStudentStatus,
+  } = useStudents();
   const [enrollModalOpen, setEnrollModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const openEnroll = (student) => {
@@ -34,7 +43,12 @@ export default function StudentsPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
-      <PageHeader title="Students" subtitle={subtitle} />
+      <PageHeader
+        title="Students"
+        subtitle={subtitle}
+        actionLabel="New Student"
+        onAction={() => setCreateModalOpen(true)}
+      />
 
       {loading && <StudentsSkeleton />}
 
@@ -57,6 +71,7 @@ export default function StudentsPage() {
               student={s}
               onEnroll={openEnroll}
               onViewEnrollments={openView}
+              onToggleStatus={toggleStudentStatus}
             />
           ))}
         </ul>
@@ -73,6 +88,12 @@ export default function StudentsPage() {
         isOpen={viewModalOpen}
         onClose={() => setViewModalOpen(false)}
         student={selectedStudent}
+      />
+
+      <StudentFormModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSubmit={addStudent}
       />
     </div>
   );
