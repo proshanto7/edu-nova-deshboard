@@ -14,7 +14,7 @@ const linkButton = `rounded text-sm font-medium transition-colors ${focusRing}`;
 export default function OtpStep({
   email,
   codeLength,
-  resendSeconds = 30,
+  resendSeconds = 60,
   onVerified,
   onChangeEmail,
 }) {
