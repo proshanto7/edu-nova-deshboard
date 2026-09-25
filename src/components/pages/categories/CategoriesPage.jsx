@@ -40,15 +40,28 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this category?")) return;
-    try {
-      await removeCategory(id);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+const handleDelete = async (id) => {
+  if (!confirm("Delete this category?")) return;
 
+  try {
+    await removeCategory(id, false);
+  } catch (err) {
+    if (err.status === 409) {
+      const confirmForce = confirm(
+        `${err.message}\n\nDelete anyway along with these courses?`
+      );
+      if (!confirmForce) return;
+
+      try {
+        await removeCategory(id, true);
+      } catch (err2) {
+        alert(err2.message);
+      }
+      return;
+    }
+    alert(err.message);
+  }
+};
   // Search: name ba description e match korle dekhabe
   const query = search.trim().toLowerCase();
   const isFiltering = query.length > 0;

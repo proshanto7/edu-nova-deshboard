@@ -35,8 +35,8 @@ export function useCategories() {
     await fetchCategories();
   };
 
-  const removeCategory = async (id) => {
-    await deleteCategory(id);
+  const removeCategory = async (id, force = false) => {
+    await deleteCategory(id, force);
     await fetchCategories();
   };
 

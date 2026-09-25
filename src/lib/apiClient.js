@@ -63,11 +63,14 @@ export const apiRequest = async (
     }
 
     if (!response.ok) {
-      throw new Error(
+      const error = new Error(
         result?.message ||
           result?.error ||
           `Request failed with status ${response.status}`
       );
+      error.status = response.status;
+      error.data = result;
+      throw error;
     }
 
     return result;

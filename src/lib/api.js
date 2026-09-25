@@ -88,9 +88,9 @@ export const createCategory = (data) => {
 export const updateCategory = (id, data) => {
   return apiRequest(`/categories/${id}`, "PATCH", data);
 };
-
-export const deleteCategory = (id) => {
-  return apiRequest(`/categories/${id}`, "DELETE");
+export const deleteCategory = (id, force = false) => {
+  const query = force ? "?force=true" : "";
+  return apiRequest(`/categories/${id}${query}`, "DELETE");
 };
 
 // ======================================================
