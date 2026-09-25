@@ -1,7 +1,7 @@
 import { focusRing } from "@/components/common/uiStyles";
 
 // <Link> ba <a> ke button er moto dekhate chaile eta className hishebe dao
-export const primaryButtonClass = `inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--accent) px-5 text-base font-semibold text-(--accent-text) transition hover:bg-(--accent-hover) active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`;
+export const primaryButtonClass = `inline-flex h-12 w-full items-center cursor-pointer justify-center gap-2 rounded-xl bg-(--accent) px-5 text-base font-semibold text-(--accent-text) transition hover:bg-(--accent-hover) active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`;
 
 function Spinner() {
   return (

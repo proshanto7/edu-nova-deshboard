@@ -8,7 +8,7 @@ import AuthAlert from "../AuthAlert";
 import AuthButton from "../AuthButton";
 import OtpInput from "../OtpInput";
 
-const linkButton = `rounded text-sm font-medium transition-colors ${focusRing}`;
+const linkButton = `rounded text-sm font-medium transition-colors cursor-pointer ${focusRing}`;
 
 // Step 2: email + OTP -> backend resetToken dey
 export default function OtpStep({
