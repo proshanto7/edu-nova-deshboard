@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { getCourses, createCourse, updateCourse, deleteCourse } from "@/lib/api";
+import {
+  getCourses,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+} from "@/lib/api";
 
 const LIMIT = 12;
 const DEBOUNCE_MS = 400;

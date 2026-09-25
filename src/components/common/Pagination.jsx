@@ -38,7 +38,7 @@ export default function Pagination({ page, pages, onPageChange }) {
       <button
         onClick={() => goTo(page - 1)}
         disabled={page === 1}
-        className="rounded-lg border border-(--border) px-3 py-1.5 text-sm disabled:opacity-40"
+        className="rounded-lg border border-(--border) cursor-pointer px-3 py-1.5 text-sm disabled:opacity-40"
       >
         Prev
       </button>
@@ -55,8 +55,8 @@ export default function Pagination({ page, pages, onPageChange }) {
             aria-current={p === page ? "page" : undefined}
             className={`min-w-9 rounded-lg border px-3 py-1.5 text-sm ${
               p === page
-                ? "border-(--primary) bg-(--primary) text-white"
-                : "border-(--border)"
+                ? "border-indigo-600 bg-indigo-600 text-white dark:border-indigo-500 dark:bg-indigo-500 dark:text-white"
+                : "border-(--border) text-foreground"
             }`}
           >
             {p}
@@ -67,7 +67,7 @@ export default function Pagination({ page, pages, onPageChange }) {
       <button
         onClick={() => goTo(page + 1)}
         disabled={page === pages}
-        className="rounded-lg border border-(--border) px-3 py-1.5 text-sm disabled:opacity-40"
+        className="rounded-lg border border-(--border) cursor-pointer px-3 py-1.5 text-sm disabled:opacity-40"
       >
         Next
       </button>

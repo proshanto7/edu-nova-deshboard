@@ -1,20 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useCourses } from "@/hooks/useCourses";
 import PageHeader from "@/components/common/PageHeader";
 import SearchInput from "@/components/common/SearchInput";
+import Pagination from "@/components/common/Pagination";
 import CourseCard from "./CourseCard";
 import CoursesSkeleton from "./CoursesSkeleton";
 import CoursesEmptyState from "./CoursesEmptyState";
 import CourseFormModal from "./CourseFormModal";
 
 export default function CoursesPage() {
-  const { courses, loading, error, addCourse, editCourse, removeCourse } =
-    useCourses();
+  const {
+    courses,
+    loading,
+    error,
+    page,
+    pages,
+    total,
+    search,
+    setSearch,
+    addCourse,
+    editCourse,
+    removeCourse,
+    goToPage,
+  } = useCourses();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
-  const [search, setSearch] = useState("");
 
   const openCreate = () => {
     setEditingCourse(null);
@@ -43,28 +56,12 @@ export default function CoursesPage() {
     }
   };
 
-  // Search: title, category name ba instructor name e match korle dekhabe
-  const query = search.trim().toLowerCase();
-  const isFiltering = query.length > 0;
-
-  const filteredCourses = useMemo(() => {
-    const list = courses ?? [];
-    if (!query) return list;
-    return list.filter(
-      (course) =>
-        course.title?.toLowerCase().includes(query) ||
-        course.category?.name?.toLowerCase().includes(query) ||
-        course.instructor?.name?.toLowerCase().includes(query),
-    );
-  }, [courses, query]);
-
-  const total = courses?.length ?? 0;
+  const isFiltering = search.trim().length > 0;
   const ready = !loading && !error;
 
   let subtitle;
   if (loading) subtitle = "Loading courses...";
-  else if (isFiltering)
-    subtitle = `Showing ${filteredCourses.length} of ${total}`;
+  else if (isFiltering) subtitle = `Showing ${courses.length} of ${total}`;
   else subtitle = `${total} ${total === 1 ? "course" : "courses"} in total`;
 
   return (
@@ -76,7 +73,7 @@ export default function CoursesPage() {
         onAction={openCreate}
       />
 
-      {ready && total > 0 && (
+      {(total > 0 || isFiltering) && (
         <div className="mb-5 sm:max-w-sm">
           <SearchInput
             value={search}
@@ -98,7 +95,7 @@ export default function CoursesPage() {
         </div>
       )}
 
-      {ready && filteredCourses.length === 0 && (
+      {ready && courses.length === 0 && (
         <CoursesEmptyState
           searchTerm={search}
           onCreate={openCreate}
@@ -106,9 +103,9 @@ export default function CoursesPage() {
         />
       )}
 
-      {ready && filteredCourses.length > 0 && (
+      {ready && courses.length > 0 && (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {filteredCourses.map((course) => (
+          {courses.map((course) => (
             <CourseCard
               key={course._id}
               course={course}
@@ -117,6 +114,10 @@ export default function CoursesPage() {
             />
           ))}
         </ul>
+      )}
+
+      {ready && courses.length > 0 && (
+        <Pagination page={page} pages={pages} onPageChange={goToPage} />
       )}
 
       <CourseFormModal
