@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useCategories } from "@/hooks/useCategories";
 import SearchInput from "@/components/common/SearchInput";
+import Pagination from "@/components/common/Pagination";
 import CategoriesHeader from "./CategoriesHeader";
 import CategoryCard from "./CategoryCard";
 import CategoriesSkeleton from "./CategoriesSkeleton";
@@ -14,13 +15,19 @@ export default function CategoriesPage() {
     categories,
     loading,
     error,
+    page,
+    pages,
+    total,
+    search,
+    setSearch,
     addCategory,
     editCategory,
     removeCategory,
+    goToPage,
   } = useCategories();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [search, setSearch] = useState("");
 
   const openCreate = () => {
     setEditingCategory(null);
@@ -40,43 +47,29 @@ export default function CategoriesPage() {
     }
   };
 
-const handleDelete = async (id) => {
-  if (!confirm("Delete this category?")) return;
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this category?")) return;
+    try {
+      await removeCategory(id, false);
+    } catch (err) {
+      if (err.status === 409) {
+        const confirmForce = confirm(
+          `${err.message}\n\nDelete anyway along with these courses?`
+        );
+        if (!confirmForce) return;
 
-  try {
-    await removeCategory(id, false);
-  } catch (err) {
-    if (err.status === 409) {
-      const confirmForce = confirm(
-        `${err.message}\n\nDelete anyway along with these courses?`
-      );
-      if (!confirmForce) return;
-
-      try {
-        await removeCategory(id, true);
-      } catch (err2) {
-        alert(err2.message);
+        try {
+          await removeCategory(id, true);
+        } catch (err2) {
+          alert(err2.message);
+        }
+        return;
       }
-      return;
+      alert(err.message);
     }
-    alert(err.message);
-  }
-};
-  // Search: name ba description e match korle dekhabe
-  const query = search.trim().toLowerCase();
-  const isFiltering = query.length > 0;
+  };
 
-  const filteredCategories = useMemo(() => {
-    const list = categories ?? [];
-    if (!query) return list;
-    return list.filter(
-      (cat) =>
-        cat.name?.toLowerCase().includes(query) ||
-        cat.description?.toLowerCase().includes(query),
-    );
-  }, [categories, query]);
-
-  const total = categories?.length ?? 0;
+  const isFiltering = search.trim().length > 0;
   const ready = !loading && !error;
 
   return (
@@ -84,12 +77,12 @@ const handleDelete = async (id) => {
       <CategoriesHeader
         loading={loading}
         total={total}
-        visible={filteredCategories.length}
+        visible={categories.length}
         isFiltering={isFiltering}
         onCreate={openCreate}
       />
 
-      {ready && total > 0 && (
+      {(total > 0 || isFiltering) && (
         <div className="mb-5 sm:max-w-sm">
           <SearchInput
             value={search}
@@ -111,7 +104,7 @@ const handleDelete = async (id) => {
         </div>
       )}
 
-      {ready && filteredCategories.length === 0 && (
+      {ready && categories.length === 0 && (
         <CategoriesEmptyState
           searchTerm={search}
           onCreate={openCreate}
@@ -119,9 +112,9 @@ const handleDelete = async (id) => {
         />
       )}
 
-      {ready && filteredCategories.length > 0 && (
+      {ready && categories.length > 0 && (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredCategories.map((cat) => (
+          {categories.map((cat) => (
             <CategoryCard
               key={cat._id}
               category={cat}
@@ -130,6 +123,10 @@ const handleDelete = async (id) => {
             />
           ))}
         </ul>
+      )}
+
+      {ready && categories.length > 0 && (
+        <Pagination page={page} pages={pages} onPageChange={goToPage} />
       )}
 
       <CategoryFormModal
