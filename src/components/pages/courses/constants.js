@@ -8,4 +8,9 @@ export const EMPTY_COURSE_FORM = {
   price: "",
   discountPrice: "",
   isFree: false,
+  totalDuration: "",
+  totalLectures: "",
+  isPublished: false,
+  requirements: [""],
+  whatYouWillLearn: [""],
 };

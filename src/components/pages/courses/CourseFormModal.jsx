@@ -8,6 +8,7 @@ import SelectWrap, { selectClass } from "@/components/common/SelectWrap";
 import { inputClass } from "@/components/common/uiStyles";
 import { useDropdownData } from "@/hooks/useDropdownData";
 import CoursePricingFields from "./CoursePricingFields";
+import CourseListField from "./CourseListField";
 import CourseImageField from "./CourseImageField";
 import { EMPTY_COURSE_FORM } from "./constants";
 
@@ -29,6 +30,7 @@ export default function CourseFormModal({
     reset,
     setValue,
     clearErrors,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: { ...EMPTY_COURSE_FORM, image: null },
@@ -46,6 +48,18 @@ export default function CourseFormModal({
         price: initialData.price,
         discountPrice: initialData.discountPrice || "",
         isFree: initialData.isFree,
+        totalDuration: initialData.totalDuration ?? "",
+        totalLectures: initialData.totalLectures ?? "",
+        isPublished: initialData.isPublished ?? false,
+        // Kono item na thakle ekta khali row rakhi, na hole "+ Add another" chara kichu dekha jabe na
+        requirements:
+          initialData.requirements?.length > 0
+            ? initialData.requirements
+            : [""],
+        whatYouWillLearn:
+          initialData.whatYouWillLearn?.length > 0
+            ? initialData.whatYouWillLearn
+            : [""],
         image: null,
       });
     } else {
@@ -53,8 +67,21 @@ export default function CourseFormModal({
     }
   }, [initialData, reset, isOpen]);
 
+  // categories/mentors async e load hoy — Edit mode e initialData-er reset()
+  // options ready howar age fire hote pare, tai option add howar por abar sync kori.
+  useEffect(() => {
+    if (initialData && categories.length > 0) {
+      setValue("category", initialData.category?._id || "");
+    }
+  }, [initialData, categories, setValue]);
+
+  useEffect(() => {
+    if (initialData && mentorOptions.length > 0) {
+      setValue("instructor", initialData.instructor?._id || "");
+    }
+  }, [initialData, mentorOptions, setValue]);
+
   const onFormSubmit = async (data) => {
-   console.log("SUBMIT DATA:", data);
     if (!initialData && !data.image) {
       setServerError("Course image is required");
       return;
@@ -62,11 +89,25 @@ export default function CourseFormModal({
 
     setServerError("");
     try {
+      // Khali/duplicate row gula bad diye pathai
+      const requirements = data.requirements
+        .map((r) => r.trim())
+        .filter(Boolean);
+      const whatYouWillLearn = data.whatYouWillLearn
+        .map((r) => r.trim())
+        .filter(Boolean);
+
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
-        if (key === "image") return;
+        if (["image", "requirements", "whatYouWillLearn"].includes(key)) return;
         formData.append(key, value);
       });
+      // Array field — backend jodi multer/express diye multipart parse kore,
+      // shei row `key[]` name-e barbar append korle array hishebe pouchay.
+      requirements.forEach((item) => formData.append("requirements[]", item));
+      whatYouWillLearn.forEach((item) =>
+        formData.append("whatYouWillLearn[]", item),
+      );
       if (data.image) {
         formData.append("image", data.image);
       }
@@ -189,7 +230,82 @@ export default function CourseFormModal({
           </FormField>
         </div>
 
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            label="Total duration"
+            htmlFor="course-total-duration"
+            hint="(minutes, optional)"
+            error={
+              errors.totalDuration
+                ? errors.totalDuration.message || "Must be 0 or more"
+                : ""
+            }
+          >
+            <input
+              id="course-total-duration"
+              type="number"
+              inputMode="numeric"
+              placeholder="0"
+              {...register("totalDuration", { min: 0 })}
+              className={inputClass(!!errors.totalDuration)}
+            />
+          </FormField>
+
+          <FormField
+            label="Total lectures"
+            htmlFor="course-total-lectures"
+            hint="(optional)"
+            error={
+              errors.totalLectures
+                ? errors.totalLectures.message || "Must be 0 or more"
+                : ""
+            }
+          >
+            <input
+              id="course-total-lectures"
+              type="number"
+              inputMode="numeric"
+              placeholder="0"
+              {...register("totalLectures", { min: 0 })}
+              className={inputClass(!!errors.totalLectures)}
+            />
+          </FormField>
+        </div>
+
+        <CourseListField
+          control={control}
+          register={register}
+          name="requirements"
+          label="Requirements"
+          placeholder="e.g. Basic JavaScript knowledge"
+        />
+
+        <CourseListField
+          control={control}
+          register={register}
+          name="whatYouWillLearn"
+          label="What you'll learn"
+          placeholder="e.g. Build REST APIs with Node.js"
+        />
+
         <CoursePricingFields register={register} errors={errors} />
+
+        {/* Publish toggle — off thakle course student-der kache dekhabe na */}
+        <label
+          htmlFor="course-is-published"
+          className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-(--border) bg-(--background-input) px-3.5 py-3"
+        >
+          <span className="text-sm font-medium text-(--text-primary)">
+            Publish this course
+          </span>
+          <input
+            id="course-is-published"
+            type="checkbox"
+            {...register("isPublished")}
+            className="peer sr-only"
+          />
+          <span className="relative h-6 w-11 shrink-0 rounded-full bg-(--border) transition-colors peer-checked:bg-(--accent) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--accent) after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:translate-x-5" />
+        </label>
 
         <CourseImageField
           setValue={setValue}
