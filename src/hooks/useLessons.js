@@ -7,6 +7,8 @@ export function useLessons(courseId) {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  // Video upload cholakalin 0-100 — upload na cholle null
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   const fetchLessons = useCallback(async () => {
     if (!courseId) return;
@@ -27,13 +29,23 @@ export function useLessons(courseId) {
   }, [fetchLessons]);
 
   const addLesson = async (formData) => {
-    await createLesson(formData);
-    await fetchLessons();
+    setUploadProgress(0);
+    try {
+      await createLesson(formData, setUploadProgress);
+      await fetchLessons();
+    } finally {
+      setUploadProgress(null);
+    }
   };
 
   const editLesson = async (id, formData) => {
-    await updateLesson(id, formData);
-    await fetchLessons();
+    setUploadProgress(0);
+    try {
+      await updateLesson(id, formData, setUploadProgress);
+      await fetchLessons();
+    } finally {
+      setUploadProgress(null);
+    }
   };
 
   const removeLesson = async (id) => {
@@ -41,5 +53,14 @@ export function useLessons(courseId) {
     await fetchLessons();
   };
 
-  return { lessons, loading, error, addLesson, editLesson, removeLesson, refetch: fetchLessons };
+  return {
+    lessons,
+    loading,
+    error,
+    uploadProgress,
+    addLesson,
+    editLesson,
+    removeLesson,
+    refetch: fetchLessons,
+  };
 }

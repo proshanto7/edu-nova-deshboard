@@ -1,5 +1,4 @@
-import { apiRequest } from "./apiClient";
-
+import { apiRequest, uploadWithProgress } from "./apiClient";
 // ======================================================
 // HELPER
 // ======================================================
@@ -133,11 +132,17 @@ export const getLesson = (id) => {
   return apiRequest(`/lesson/${id}`);
 };
 
-export const createLesson = (data) => {
+export const createLesson = (data, onProgress) => {
+  if (onProgress) {
+    return uploadWithProgress("/lesson", data, "POST", onProgress);
+  }
   return apiRequest("/lesson", "POST", data);
 };
 
-export const updateLesson = (id, data) => {
+export const updateLesson = (id, data, onProgress) => {
+  if (onProgress) {
+    return uploadWithProgress(`/lesson/${id}`, data, "PATCH", onProgress);
+  }
   return apiRequest(`/lesson/${id}`, "PATCH", data);
 };
 

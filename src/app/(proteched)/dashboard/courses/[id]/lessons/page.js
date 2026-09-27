@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import LessonsPage from "@/components/pages/dashboard/lessons/LessonsPage";
+import LessonsPage from "@/components/pages/lessons/LessonsPage";
 
 export default function Page() {
   const { id } = useParams();

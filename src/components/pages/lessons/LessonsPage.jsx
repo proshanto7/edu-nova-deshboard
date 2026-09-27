@@ -12,8 +12,15 @@ import LessonsEmptyState from "./LessonsEmptyState";
 import LessonFormModal from "./LessonFormModal";
 
 export default function LessonsPage({ courseId }) {
-  const { lessons, loading, error, addLesson, editLesson, removeLesson } =
-    useLessons(courseId);
+  const {
+    lessons,
+    loading,
+    error,
+    addLesson,
+    editLesson,
+    removeLesson,
+    uploadProgress,
+  } = useLessons(courseId);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState(null);
 
@@ -107,6 +114,7 @@ export default function LessonsPage({ courseId }) {
         onSubmit={handleSubmit}
         initialData={editingLesson}
         courseId={courseId}
+        uploadProgress={uploadProgress}
       />
     </div>
   );

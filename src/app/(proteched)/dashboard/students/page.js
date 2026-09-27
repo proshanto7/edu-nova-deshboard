@@ -1,4 +1,4 @@
-import StudentsPage from "@/components/pages/dashboard/students/StudentsPage";
+import StudentsPage from "@/components/pages/students/StudentsPage";
 
 export default function Page() {
   return <StudentsPage />;

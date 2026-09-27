@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import EnrollmentRequestList from "./enrollment-requests/EnrollmentRequestList";
+import EnrollmentRequestList from "../enrollment-requests/EnrollmentRequestList";
 
 /**
  * Dashboard home e "needs your review" list.
